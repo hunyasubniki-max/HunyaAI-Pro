@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CodeEvolution 400 — 制御盤</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
+
+  :root {
+    --bg:       #070a0f;
+    --panel:    #0c1118;
+    --border:   #1a2535;
+    --accent:   #00e5ff;
+    --accent2:  #ff6b35;
+    --accent3:  #39ff14;
+    --text:     #c8d8e8;
+    --dim:      #4a6080;
+    --queen:    #ffd700;
+    --worker:   #00e5ff;
+    --danger:   #ff3b3b;
+    --success:  #39ff14;
+    --warning:  #ffcc00;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── スキャンライン オーバーレイ ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent, transparent 2px,
+      rgba(0,229,255,0.015) 2px, rgba(0,229,255,0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── ヘッダー ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(90deg, #070a0f 60%, #0a1a2a);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-shadow: 0 0 20px var(--accent);
+  }
+  .logo span { color: var(--queen); }
+  .conn-indicator {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; color: var(--dim);
+  }
+  .conn-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--danger);
+    transition: background 0.3s;
+    box-shadow: 0 0 6px currentColor;
+  }
+  .conn-dot.live { background: var(--success); }
+
+  /* ── レイアウト ── */
+  .grid {
+    display: grid;
+    grid-template-columns: 280px 1fr 300px;
+    grid-template-rows: auto 1fr auto;
+    gap: 1px;
+    background: var(--border);
+    min-height: calc(100vh - 50px);
+  }
+
+  .panel {
+    background: var(--panel);
+    padding: 16px;
+  }
+  .panel-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-title .hl { color: var(--accent); }
+
+  /* ── ステータスカード ── */
+  .stat-row {
+    display: flex; flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: #080e18;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+  .stat-card.queen::before { background: var(--queen); box-shadow: 0 0 8px var(--queen); }
+  .stat-card.worker::before { background: var(--worker); box-shadow: 0 0 8px var(--worker); }
+  .stat-card.data::before { background: var(--accent3); box-shadow: 0 0 8px var(--accent3); }
+  .stat-card.lora::before { background: var(--accent2); box-shadow: 0 0 8px var(--accent2); }
+
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    line-height: 1;
+    color: var(--text);
+  }
+  .stat-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    margin-top: 2px;
+  }
+
+  /* ── フェーズバー ── */
+  .phase-section { margin-bottom: 16px; }
+  .phase-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px; color: var(--dim);
+    letter-spacing: 1px;
+    display: flex; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .phase-bar {
+    height: 6px;
+    background: #1a2535;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+  .phase-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    border-radius: 3px;
+    transition: width 1s ease;
+    box-shadow: 0 0 8px var(--accent);
+  }
+  .phase-milestones {
+    display: flex; justify-content: space-between;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px; color: var(--dim);
+  }
+
+  /* ── メインエリア（ログ + アクティビティ） ── */
+  .main-area {
+    grid-column: 2;
+    display: flex; flex-direction: column;
+    gap: 1px;
+  }
+
+  /* ── 14ステップビジュアライザ ── */
+  .steps-panel {
+    padding: 16px;
+    background: var(--panel);
+  }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+  .step-cell {
+    background: #080e18;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 8px 6px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .step-cell.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(0,229,255,0.3);
+    background: #0a1a28;
+  }
+  .step-cell.done {
+    border-color: var(--accent3);
+    background: #081408;
+  }
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    color: var(--dim);
+    line-height: 1;
+  }
+  .step-cell.active .step-num { color: var(--accent); }
+  .step-cell.done .step-num { color: var(--accent3); }
+  .step-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    color: var(--dim);
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+  .step-cell.active .step-name { color: var(--accent); }
+  .step-count {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    color: var(--accent2);
+    margin-top: 2px;
+  }
+
+  /* ── ログビューア ── */
+  .log-panel {
+    flex: 1;
+    padding: 16px;
+    background: var(--panel);
+  }
+  .log-box {
+    background: #040709;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    height: 280px;
+    overflow-y: auto;
+    padding: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+  .log-box::-webkit-scrollbar { width: 4px; }
+  .log-box::-webkit-scrollbar-track { background: transparent; }
+  .log-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .log-line { display: flex; gap: 8px; margin-bottom: 2px; }
+  .log-time { color: var(--dim); white-space: nowrap; }
+  .log-tag {
+    padding: 0 5px;
+    border-radius: 2px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    align-self: center;
+  }
+  .tag-queen { background: rgba(255,215,0,0.15); color: var(--queen); }
+  .tag-worker { background: rgba(0,229,255,0.12); color: var(--worker); }
+  .tag-pass  { background: rgba(57,255,20,0.12);  color: var(--success); }
+  .tag-fail  { background: rgba(255,59,59,0.12);  color: var(--danger); }
+  .tag-lora  { background: rgba(255,107,53,0.12); color: var(--accent2); }
+  .tag-info  { background: rgba(74,96,128,0.2);   color: var(--dim); }
+  .log-msg { color: var(--text); }
+
+  /* ── タスク投入 ── */
+  .task-panel {
+    padding: 16px;
+    background: var(--panel);
+  }
+  .task-input-row {
+    display: flex; gap: 8px; margin-bottom: 10px;
+  }
+  .task-input {
+    flex: 1;
+    background: #040709;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .task-input:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(0,229,255,0.2); }
+  .btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    box-shadow: 0 0 12px rgba(0,229,255,0.4);
+  }
+  .btn-primary:hover { box-shadow: 0 0 20px rgba(0,229,255,0.6); transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-phase {
+    background: transparent;
+    border: 1px solid var(--queen);
+    color: var(--queen);
+    display: none;
+    animation: pulse-gold 2s infinite;
+  }
+  .btn-phase:hover { background: rgba(255,215,0,0.1); }
+  @keyframes pulse-gold {
+    0%,100% { box-shadow: 0 0 8px rgba(255,215,0,0.3); }
+    50% { box-shadow: 0 0 20px rgba(255,215,0,0.7); }
+  }
+
+  /* ── 右サイドバー ── */
+  .right-sidebar {
+    display: flex; flex-direction: column;
+    gap: 1px;
+    grid-row: 1 / -1;
+  }
+
+  /* ── ノードモニター ── */
+  .node-monitor { padding: 16px; background: var(--panel); }
+  .node-card {
+    display: flex; align-items: center; gap: 10px;
+    background: #080e18;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+  .node-icon {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .node-icon.queen-icon { background: rgba(255,215,0,0.15); border: 1px solid rgba(255,215,0,0.3); }
+  .node-icon.worker-icon { background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.2); }
+  .node-info { flex: 1; min-width: 0; }
+  .node-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .node-status-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--dim);
+    margin-top: 2px;
+  }
+  .node-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--accent3);
+    white-space: nowrap;
+  }
+
+  /* ── メトリクスチャート（SVG スパークライン） ── */
+  .chart-panel { padding: 16px; background: var(--panel); flex: 1; }
+  .sparkline-wrap { margin-bottom: 14px; }
+  .sparkline-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px; color: var(--dim);
+    display: flex; justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .sparkline-svg { width: 100%; overflow: visible; }
+  .spark-path { fill: none; stroke-width: 1.5; stroke-linecap: round; }
+  .spark-area { opacity: 0.15; stroke: none; }
+
+  /* ── フッター ── */
+  footer {
+    grid-column: 1 / -1;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+  }
+  .footer-stats { display: flex; gap: 24px; }
+  .footer-stat span { color: var(--accent); }
+
+  /* ── アニメーション ── */
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .blink { animation: blink 1.5s infinite; }
+  @keyframes scan {
+    0%   { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+  .scan-line {
+    position: fixed; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,229,255,0.3), transparent);
+    animation: scan 4s linear infinite;
+    pointer-events: none; z-index: 9998;
+  }
+
+  /* ── レスポンシブ ── */
+  @media (max-width: 1100px) {
+    .grid { grid-template-columns: 240px 1fr 260px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scan-line"></div>
+
+<header>
+  <div class="logo">Code<span>Evolution</span> 400</div>
+  <div style="display:flex; gap:24px; align-items:center;">
+    <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--dim)">
+      MODEL: <span style="color:var(--accent)">Qwen2.5-Coder-7B</span>
+    </div>
+    <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--dim)">
+      HUB: <span id="hub-path" style="color:var(--accent)">…</span>
+    </div>
+    <div class="conn-indicator">
+      <div class="conn-dot" id="conn-dot"></div>
+      <span id="conn-label">OFFLINE</span>
+    </div>
+  </div>
+</header>
+
+<div class="grid">
+
+  <!-- ── 左サイドバー ── -->
+  <aside class="panel" style="grid-row: 1 / 4; display:flex; flex-direction:column; gap:16px;">
+    <div class="panel-title"><span class="hl">●</span> SYSTEM STATUS</div>
+
+    <div class="stat-row">
+      <div class="stat-card queen">
+        <div class="stat-label">Phase</div>
+        <div class="stat-value" id="phase-num">1</div>
+        <div class="stat-sub" id="phase-label">DATA COLLECTION</div>
+      </div>
+      <div class="stat-card data">
+        <div class="stat-label">Hub Records</div>
+        <div class="stat-value" id="hub-records">—</div>
+        <div class="stat-sub">Gold Data in Drive</div>
+      </div>
+      <div class="stat-card lora">
+        <div class="stat-label">LoRA Version</div>
+        <div class="stat-value" id="lora-ver">v0</div>
+        <div class="stat-sub" id="lora-status">BASE MODEL</div>
+      </div>
+      <div class="stat-card worker">
+        <div class="stat-label">Training</div>
+        <div class="stat-value" id="training-status">IDLE</div>
+        <div class="stat-sub">Fine-tuning state</div>
+      </div>
+    </div>
+
+    <div class="phase-section">
+      <div class="phase-label">
+        <span>PROGRESS TO PHASE 2</span>
+        <span id="phase-pct">0%</span>
+      </div>
+      <div class="phase-bar">
+        <div class="phase-fill" id="phase-bar" style="width:0%"></div>
+      </div>
+      <div class="phase-milestones">
+        <span>0</span><span>10K</span><span>100K</span>
+      </div>
+    </div>
+
+    <!-- フェーズ解禁ボタン -->
+    <button class="btn btn-phase" id="btn-phase2" onclick="alert('14段階フルパイプライン 起動！')">
+      ▶ 14-STEP PIPELINE
+    </button>
+    <button class="btn btn-phase" id="btn-phase3" style="border-color:var(--accent2); color:var(--accent2);" onclick="alert('Qwen専用モード 起動！（Groq削除済み）')">
+      ▶ QWEN ONLY MODE
+    </button>
+
+    <div>
+      <div class="panel-title"><span class="hl">●</span> SETUP GUIDE</div>
+      <div style="font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--dim); line-height:1.8;">
+        <div style="color:var(--queen)">【女王アリ】</div>
+        <div>1. Drive マウント</div>
+        <div>2. HUB_ROOT 設定</div>
+        <div>3. queen_main.py 実行</div>
+        <div style="margin-top:8px; color:var(--worker)">【働きアリ ×4】</div>
+        <div>1. Drive マウント</div>
+        <div>2. Hub ショートカット追加</div>
+        <div>3. WORKER_ID 設定</div>
+        <div>4. worker_sub.py 実行</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── メインエリア ── -->
+  <div class="main-area">
+
+    <!-- 14ステップ -->
+    <div class="steps-panel">
+      <div class="panel-title"><span class="hl">●</span> 14-STEP PIPELINE — LIVE</div>
+      <div class="steps-grid" id="steps-grid">
+        <!-- JS で生成 -->
+      </div>
+    </div>
+
+    <!-- ログ -->
+    <div class="log-panel">
+      <div class="panel-title" style="display:flex; justify-content:space-between;">
+        <span><span class="hl">●</span> ACTIVITY LOG</span>
+        <button class="btn btn-primary" style="padding:3px 10px; font-size:10px;" onclick="clearLog()">CLR</button>
+      </div>
+      <div class="log-box" id="log-box">
+        <div class="log-line">
+          <span class="log-time">--:--:--</span>
+          <span class="log-tag tag-info">INFO</span>
+          <span class="log-msg">WebSocket 接続待機中…</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- タスク投入 -->
+    <div class="task-panel">
+      <div class="panel-title"><span class="hl">●</span> TASK INJECTION</div>
+      <div class="task-input-row">
+        <input class="task-input" id="task-input" type="text"
+               placeholder="タスクを入力（例: バブルソートをPythonで実装し、型ヒントとpytestも書いて）" />
+        <button class="btn btn-primary" id="btn-run" onclick="submitTask()">INJECT</button>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px;">
+        <button class="btn" style="background:#0a1a28; border:1px solid var(--border); color:var(--dim); font-size:9px; padding:4px 8px;"
+          onclick="setTask('バブルソートをPythonで実装し、型ヒントとpytestも書いて')">バブルソート</button>
+        <button class="btn" style="background:#0a1a28; border:1px solid var(--border); color:var(--dim); font-size:9px; padding:4px 8px;"
+          onclick="setTask('LRUキャッシュをPythonで実装し、型ヒントとpytestも書いて')">LRUキャッシュ</button>
+        <button class="btn" style="background:#0a1a28; border:1px solid var(--border); color:var(--dim); font-size:9px; padding:4px 8px;"
+          onclick="setTask('二分探索木（BST）のinsert/searchをPythonで実装して')">BST</button>
+        <button class="btn" style="background:#0a1a28; border:1px solid var(--border); color:var(--dim); font-size:9px; padding:4px 8px;"
+          onclick="setTask('ダイクストラ法をPythonで実装し、型ヒントとpytestも書いて')">ダイクストラ</button>
+        <button class="btn" style="background:#0a1a28; border:1px solid var(--border); color:var(--dim); font-size:9px; padding:4px 8px;"
+          onclick="setTask('非同期HTTPクライアントをaiohttp + asyncioで実装して')">async HTTP</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 右サイドバー ── -->
+  <div class="right-sidebar">
+
+    <!-- ノードモニター -->
+    <div class="node-monitor">
+      <div class="panel-title"><span class="hl">●</span> NODE MONITOR</div>
+      <div id="node-list">
+        <div class="node-card">
+          <div class="node-icon queen-icon">♛</div>
+          <div class="node-info">
+            <div class="node-name">QUEEN (Main)</div>
+            <div class="node-status-text" id="queen-status">Connecting…</div>
+          </div>
+          <div class="node-badge" id="queen-lora">—</div>
+        </div>
+        <div class="node-card" id="worker-card-1">
+          <div class="node-icon worker-icon">⬡</div>
+          <div class="node-info">
+            <div class="node-name">worker_01</div>
+            <div class="node-status-text" id="w1-status">—</div>
+          </div>
+          <div class="node-badge" id="w1-pass">—</div>
+        </div>
+        <div class="node-card" id="worker-card-2">
+          <div class="node-icon worker-icon">⬡</div>
+          <div class="node-info">
+            <div class="node-name">worker_02</div>
+            <div class="node-status-text" id="w2-status">—</div>
+          </div>
+          <div class="node-badge" id="w2-pass">—</div>
+        </div>
+        <div class="node-card" id="worker-card-3">
+          <div class="node-icon worker-icon">⬡</div>
+          <div class="node-info">
+            <div class="node-name">worker_03</div>
+            <div class="node-status-text" id="w3-status">—</div>
+          </div>
+          <div class="node-badge" id="w3-pass">—</div>
+        </div>
+        <div class="node-card" id="worker-card-4">
+          <div class="node-icon worker-icon">⬡</div>
+          <div class="node-info">
+            <div class="node-name">worker_04</div>
+            <div class="node-status-text" id="w4-status">—</div>
+          </div>
+          <div class="node-badge" id="w4-pass">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- スパークラインチャート -->
+    <div class="chart-panel">
+      <div class="panel-title"><span class="hl">●</span> METRICS</div>
+
+      <div class="sparkline-wrap">
+        <div class="sparkline-label">
+          <span>RECORDS / HOUR</span>
+          <span id="rph-val" style="color:var(--accent3)">—</span>
+        </div>
+        <svg class="sparkline-svg" viewBox="0 0 240 40" id="spark-rph">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#39ff14"/>
+              <stop offset="100%" stop-color="#39ff14" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="spark-area" fill="url(#g1)" id="spark-rph-area"/>
+          <path class="spark-path" stroke="#39ff14" id="spark-rph-line"/>
+        </svg>
+      </div>
+
+      <div class="sparkline-wrap">
+        <div class="sparkline-label">
+          <span>PASS RATE %</span>
+          <span id="pass-rate-val" style="color:var(--accent)">—</span>
+        </div>
+        <svg class="sparkline-svg" viewBox="0 0 240 40" id="spark-pass">
+          <defs>
+            <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#00e5ff"/>
+              <stop offset="100%" stop-color="#00e5ff" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="spark-area" fill="url(#g2)" id="spark-pass-area"/>
+          <path class="spark-path" stroke="#00e5ff" id="spark-pass-line"/>
+        </svg>
+      </div>
+
+      <div class="sparkline-wrap">
+        <div class="sparkline-label">
+          <span>LORA VERSION</span>
+          <span id="lora-ver-val" style="color:var(--accent2)">—</span>
+        </div>
+        <svg class="sparkline-svg" viewBox="0 0 240 40" id="spark-lora">
+          <defs>
+            <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ff6b35"/>
+              <stop offset="100%" stop-color="#ff6b35" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="spark-area" fill="url(#g3)" id="spark-lora-area"/>
+          <path class="spark-path" stroke="#ff6b35" id="spark-lora-line"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── フッター ── -->
+  <footer>
+    <div class="footer-stats">
+      <div>HUB: <span id="footer-hub">CodeEvolution_Hub</span></div>
+      <div>MODEL: <span>Qwen2.5-Coder-7B-Instruct</span></div>
+      <div>STORAGE: <span>Google Drive (Shared)</span></div>
+      <div>INFERENCE: <span>Local Only</span></div>
+    </div>
+    <div id="footer-time" style="color:var(--dim)"></div>
+  </footer>
+
+</div><!-- /grid -->
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════
+const API_BASE = window.location.hostname === 'localhost'
+  ? 'http://localhost:8000'
+  : `http://${window.location.hostname}:8000`;
+const WS_URL   = API_BASE.replace('http', 'ws') + '/ws';
+
+// ══════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════
+let state = {
+  records: 0, loraVer: 0, phase: 1,
+  isTraining: false,
+  passRateHistory: [],
+  rphHistory: [],
+  loraHistory: [],
+  lastRecordCount: 0,
+  lastRecordTime: Date.now(),
+  totalPassed: 0, totalRuns: 0,
+};
+
+// ══════════════════════════════════════════════════════════════
+// 14ステップ 定義
+// ══════════════════════════════════════════════════════════════
+const STEPS = [
+  { n:  1, name: 'Fetch',    agents: 1   },
+  { n:  2, name: 'Generate', agents: 20  },
+  { n:  3, name: 'Judge',    agents: 10  },
+  { n:  4, name: 'Critic',   agents: 10  },
+  { n:  5, name: 'Refine',   agents: 10  },
+  { n:  6, name: 'Judge2',   agents: 5   },
+  { n:  7, name: 'Merge',    agents: 1   },
+  { n:  8, name: 'Audit',    agents: 10  },
+  { n:  9, name: 'PreMerge', agents: 5   },
+  { n: 10, name: 'GenTest',  agents: 10  },
+  { n: 11, name: 'Pytest',   agents: 20  },
+  { n: 12, name: 'Fix',      agents: 20  },
+  { n: 13, name: 'Static',   agents: 10  },
+  { n: 14, name: 'Save',     agents: 1   },
+];
+
+// ── ステップグリッド生成
+function buildStepsGrid() {
+  const grid = document.getElementById('steps-grid');
+  grid.innerHTML = '';
+  STEPS.forEach(s => {
+    const cell = document.createElement('div');
+    cell.className = 'step-cell';
+    cell.id = `step-${s.n}`;
+    cell.innerHTML = `<div class="step-num">${s.n}</div>
+      <div class="step-name">${s.name}</div>
+      <div class="step-count">×${s.agents}</div>`;
+    grid.appendChild(cell);
+  });
+}
+
+// ── アニメーションループ（デモ用）
+let stepAnim = { current: 1, timer: null };
+function animateSteps() {
+  clearTimeout(stepAnim.timer);
+  STEPS.forEach(s => {
+    const el = document.getElementById(`step-${s.n}`);
+    if (!el) return;
+    el.classList.remove('active', 'done');
+    if (s.n < stepAnim.current) el.classList.add('done');
+    if (s.n === stepAnim.current) el.classList.add('active');
+  });
+  stepAnim.timer = setTimeout(() => {
+    stepAnim.current = stepAnim.current >= 14 ? 1 : stepAnim.current + 1;
+    animateSteps();
+  }, 600);
+}
+
+// ══════════════════════════════════════════════════════════════
+// ログ
+// ══════════════════════════════════════════════════════════════
+function addLog(msg, tag = 'info', source = 'SYS') {
+  const box  = document.getElementById('log-box');
+  const time = new Date().toTimeString().slice(0, 8);
+  const tagClass = { queen:'tag-queen', worker:'tag-worker', pass:'tag-pass',
+                     fail:'tag-fail', lora:'tag-lora', info:'tag-info' }[tag] || 'tag-info';
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.innerHTML = `<span class="log-time">${time}</span>
+    <span class="log-tag ${tagClass}">${source}</span>
+    <span class="log-msg">${msg}</span>`;
+  box.appendChild(line);
+  if (box.children.length > 200) box.removeChild(box.firstChild);
+  box.scrollTop = box.scrollHeight;
+}
+function clearLog() { document.getElementById('log-box').innerHTML = ''; }
+
+// ══════════════════════════════════════════════════════════════
+// UI 更新
+// ══════════════════════════════════════════════════════════════
+function updateUI(data) {
+  const records = data.hub_records ?? data.total_records ?? 0;
+  const lora    = data.lora_version ?? 0;
+  const phase   = data.phase ?? 1;
+  const training = data.is_training ?? false;
+  const latest  = data.latest_lora ?? '';
+
+  // レコード増分チェック
+  if (records > state.records) {
+    const delta = records - state.records;
+    const now   = Date.now();
+    const hours = (now - state.lastRecordTime) / 3_600_000;
+    const rph   = Math.round(delta / Math.max(hours, 0.001));
+    state.rphHistory.push(rph);
+    if (state.rphHistory.length > 20) state.rphHistory.shift();
+    state.lastRecordTime  = now;
+    state.lastRecordCount = records;
+    document.getElementById('rph-val').textContent = rph.toLocaleString();
+    updateSparkline('rph', state.rphHistory);
+  }
+
+  // LoRA 更新
+  if (lora > state.loraVer) {
+    addLog(`LoRA v${lora} Fine-tuning 完了 → Hub 配布`, 'lora', 'QUEEN');
+    state.loraHistory.push(lora);
+    if (state.loraHistory.length > 20) state.loraHistory.shift();
+    updateSparkline('lora', state.loraHistory);
+    document.getElementById('lora-ver-val').textContent = `v${lora}`;
+    document.getElementById('lora-ver').textContent = `v${lora}`;
+    document.getElementById('lora-status').textContent = latest ? 'LORA ACTIVE' : 'BASE MODEL';
+  }
+
+  state.records  = records;
+  state.loraVer  = lora;
+  state.phase    = phase;
+  state.isTraining = training;
+
+  // テキスト更新
+  document.getElementById('hub-records').textContent = records.toLocaleString();
+  document.getElementById('phase-num').textContent   = phase;
+  document.getElementById('phase-label').textContent = ['', 'DATA COLLECTION', 'PIPELINE ACTIVE', 'QWEN ONLY'][phase] || '';
+  document.getElementById('training-status').textContent = training ? 'TRAINING' : 'IDLE';
+  document.getElementById('training-status').style.color = training ? 'var(--accent2)' : 'var(--text)';
+  document.getElementById('queen-status').textContent = training ? 'Fine-tuning…' : 'Idle / Monitoring';
+  document.getElementById('queen-lora').textContent   = `v${lora}`;
+  document.getElementById('hub-path').textContent     = 'MyDrive/CodeEvolution_Hub';
+
+  // フェーズバー
+  const pct = Math.min(records / 10_000 * 100, 100);
+  document.getElementById('phase-bar').style.width = `${pct}%`;
+  document.getElementById('phase-pct').textContent = `${pct.toFixed(1)}%`;
+
+  // フェーズボタン解禁
+  document.getElementById('btn-phase2').style.display = records >= 10_000   ? 'block' : 'none';
+  document.getElementById('btn-phase3').style.display = records >= 100_000  ? 'block' : 'none';
+}
+
+// ══════════════════════════════════════════════════════════════
+// スパークライン描画
+// ══════════════════════════════════════════════════════════════
+function updateSparkline(id, data) {
+  if (data.length < 2) return;
+  const W = 240, H = 40, pad = 2;
+  const min = Math.min(...data), max = Math.max(...data);
+  const range = max - min || 1;
+  const pts = data.map((v, i) => {
+    const x = pad + (i / (data.length - 1)) * (W - pad * 2);
+    const y = H - pad - ((v - min) / range) * (H - pad * 2);
+    return [x, y];
+  });
+  const line = pts.map((p, i) => (i === 0 ? `M${p[0]},${p[1]}` : `L${p[0]},${p[1]}`)).join(' ');
+  const area = line + ` L${pts[pts.length-1][0]},${H} L${pts[0][0]},${H} Z`;
+  document.getElementById(`spark-${id}-line`).setAttribute('d', line);
+  document.getElementById(`spark-${id}-area`).setAttribute('d', area);
+}
+
+// ══════════════════════════════════════════════════════════════
+// WebSocket
+// ══════════════════════════════════════════════════════════════
+let ws, reconnTimer;
+function connect() {
+  clearTimeout(reconnTimer);
+  try {
+    ws = new WebSocket(WS_URL);
+  } catch(e) { schedReconn(); return; }
+
+  ws.onopen = () => {
+    document.getElementById('conn-dot').classList.add('live');
+    document.getElementById('conn-label').textContent = 'LIVE';
+    addLog('女王アリ WebSocket 接続完了', 'queen', 'SYS');
+  };
+
+  ws.onmessage = e => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.type === 'status') updateUI(msg.data);
+      if (msg.type === 'log')    addLog(msg.message, msg.level || 'info', msg.source || 'SYS');
+    } catch(_) {}
+  };
+
+  ws.onclose = ws.onerror = () => {
+    document.getElementById('conn-dot').classList.remove('live');
+    document.getElementById('conn-label').textContent = 'RECONNECTING…';
+    schedReconn();
+  };
+}
+function schedReconn() {
+  reconnTimer = setTimeout(connect, 3000);
+}
+
+// ══════════════════════════════════════════════════════════════
+// ポーリング（WS が繋がっていない場合の fallback）
+// ══════════════════════════════════════════════════════════════
+async function pollAPI() {
+  try {
+    const r = await fetch(API_BASE + '/api/status');
+    if (!r.ok) return;
+    const data = await r.json();
+    updateUI(data);
+  } catch(_) {}
+
+  try {
+    const r = await fetch(API_BASE + '/api/logs');
+    if (!r.ok) return;
+    const {logs} = await r.json();
+    (logs || []).slice(0, 5).forEach(l => {
+      const src = l.worker_id || 'SYS';
+      const tag = l.event === 'run_done' ? (l.passed ? 'pass' : 'fail') : 'worker';
+      addLog(`[${l.event}] ${JSON.stringify(l).slice(0, 80)}`, tag, src.toUpperCase());
+    });
+  } catch(_) {}
+}
+
+// ══════════════════════════════════════════════════════════════
+// タスク投入
+// ══════════════════════════════════════════════════════════════
+function setTask(text) { document.getElementById('task-input').value = text; }
+
+async function submitTask() {
+  const input = document.getElementById('task-input');
+  const task  = input.value.trim();
+  if (!task) return;
+  addLog(`タスク投入: ${task}`, 'queen', 'USER');
+  try {
+    const r = await fetch(API_BASE + '/api/runs', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({task}),
+    });
+    if (r.ok) { addLog('タスク受理完了', 'pass', 'API'); }
+    else       { addLog(`投入失敗: ${r.status}`, 'fail', 'API'); }
+  } catch(e) {
+    addLog(`API接続エラー: ${e.message}`, 'fail', 'API');
+  }
+  input.value = '';
+}
+
+// ══════════════════════════════════════════════════════════════
+// ワーカー状態シミュレーション（デモ用：実際はログから取得）
+// ══════════════════════════════════════════════════════════════
+const workerNames = ['worker_01','worker_02','worker_03','worker_04'];
+const workerStates = ['Step 2/Generate','Step 7/Merge','Step 11/Pytest','Step 14/Save','Idle'];
+let workerSimTimer;
+function simulateWorkers() {
+  workerNames.forEach((wid, i) => {
+    const statusEl = document.getElementById(`w${i+1}-status`);
+    const passEl   = document.getElementById(`w${i+1}-pass`);
+    if (!statusEl) return;
+    const st = workerStates[Math.floor(Math.random() * workerStates.length)];
+    statusEl.textContent = st;
+    const passed = Math.floor(Math.random() * 20);
+    passEl.textContent   = `${passed}✓`;
+  });
+  workerSimTimer = setTimeout(simulateWorkers, 3000 + Math.random()*2000);
+}
+
+// ══════════════════════════════════════════════════════════════
+// 時計
+// ══════════════════════════════════════════════════════════════
+function updateClock() {
+  document.getElementById('footer-time').textContent = new Date().toLocaleString('ja-JP');
+}
+
+// ══════════════════════════════════════════════════════════════
+// 初期化
+// ══════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  buildStepsGrid();
+  animateSteps();
+  connect();
+  simulateWorkers();
+  updateClock();
+  setInterval(updateClock, 1000);
+  setInterval(pollAPI, 5000);  // fallback polling
+  addLog('CodeEvolution 400 ダッシュボード 起動', 'queen', 'SYS');
+  addLog('女王アリ (queen_main.py) への接続中…', 'info', 'SYS');
+  addLog('モデル: Qwen2.5-Coder-7B-Instruct (Local Only)', 'info', 'SYS');
+  addLog('ストレージ: Google Drive CodeEvolution_Hub', 'info', 'SYS');
+});
+</script>
+</body>
+</html>
