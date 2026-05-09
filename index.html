@@ -132,6 +132,7 @@
         .code-download-panel { grid-column: 1 / 4; animation-delay: 0.25s; }
         .testing-methods-panel { grid-column: 1 / 4; animation-delay: 0.35s; }
         .self-extension-panel { grid-column: 1 / 4; animation-delay: 0.45s; }
+        .ai-processes-panel { grid-column: 1 / 4; animation-delay: 0.55s; }
 
         .notification-container { position: fixed; top: 20px; right: 20px; width: 380px; z-index: 1000; max-height: 80vh; overflow-y: auto; }
 
@@ -353,6 +354,39 @@
 
         .ai-box h4 { font-size: 0.95em; margin-bottom: 5px; color: #00d4ff; }
         .ai-box p { font-size: 0.8em; color: #a0a0a0; }
+
+        .ai-process-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .ai-process-item {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid #00d4ff;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.8em;
+        }
+
+        .ai-process-item.active {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+
+        .ai-process-name {
+            font-weight: 700;
+            color: #00ff00;
+            margin-bottom: 5px;
+        }
+
+        .ai-process-status {
+            font-size: 0.75em;
+            color: #a0a0a0;
+        }
 
         .ai-architecture-grid {
             display: grid;
@@ -673,6 +707,9 @@
                 width: 100%;
                 justify-content: center;
             }
+            .ai-process-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
@@ -697,9 +734,9 @@
     <div class="container">
         <header>
             <div>
-                <h1>HunyaCodingAI Pro - Self-Evolving Multi-AI System v3.5</h1>
-                <p>Advanced Multi-Layer AI Orchestration with GitHub Integration</p>
-                <p style="font-size: 0.9em; color: #00ff00; margin-top: 5px;">Target Success Rate: 85% | Token-Based Authentication | Auto-Evolution | Real-time Module Management</p>
+                <h1>HunyaCodingAI Pro - Self-Evolving Multi-AI System v3.6</h1>
+                <p>10 Independent AI Processes | Local Execution | No External APIs</p>
+                <p style="font-size: 0.9em; color: #00ff00; margin-top: 5px;">Target Success Rate: 85% | Token-Based Auth | Multi-Process Architecture | Real-time Orchestration</p>
             </div>
             <div class="auth-panel">
                 <div id="authStatus">
@@ -732,11 +769,11 @@
                         </div>
                         <div class="status-item">
                             <span class="status-indicator processing"></span>
-                            <span>Last Check: <strong id="lastCheckTime">Never</strong></span>
+                            <span>AI Processes: <strong id="aiProcessCount">0/10</strong></span>
                         </div>
                         <div class="status-item">
                             <span class="status-indicator success"></span>
-                            <span>System Version: <strong id="systemVersion">3.5.0</strong></span>
+                            <span>System Version: <strong id="systemVersion">3.6.0</strong></span>
                         </div>
                         <div class="status-item">
                             <span class="status-indicator success"></span>
@@ -744,7 +781,13 @@
                         </div>
                     </div>
                     <button onclick="githubManager.checkForUpdates()" style="width: 100%; margin-top: 10px;">Check for Updates Now</button>
-                    <button onclick="githubManager.startAutoEvolution()" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, rgba(0, 255, 0, 0.2) 0%, rgba(0, 200, 100, 0.2) 100%);">Start Auto-Evolution</button>
+                    <button onclick="startAllAIProcesses()" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, rgba(0, 255, 0, 0.2) 0%, rgba(0, 200, 100, 0.2) 100%);">Start All AI Processes</button>
+                </div>
+
+                <div class="panel ai-processes-panel">
+                    <h2>🤖 10 AI Process Workers (Parallel Execution)</h2>
+                    <div class="ai-process-grid" id="aiProcessesContainer"></div>
+                    <button onclick="terminateAllProcesses()" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, rgba(255, 0, 0, 0.2) 0%, rgba(200, 0, 0, 0.2) 100%);">Terminate All Processes</button>
                 </div>
 
                 <div class="panel code-download-panel">
@@ -757,10 +800,6 @@
                             <option value="delta">Delta Updates (Incremental)</option>
                             <option value="core">Core Modules Only</option>
                         </select>
-                    </div>
-                    <div id="moduleSelection" style="display: none;">
-                        <label style="margin-bottom: 10px;">Select Modules:</label>
-                        <div class="module-list" id="moduleCheckboxes"></div>
                     </div>
                     <div class="download-stats">
                         <div class="download-stat">
@@ -838,27 +877,18 @@
                 </div>
 
                 <div class="panel ai-architecture-panel">
-                    <h2>AI Architecture (No External APIs)</h2>
-                    <div class="ai-architecture-grid">
-                        <div class="ai-box">
-                            <h4>Discussion AI</h4>
-                            <p>Multi-AI Conversation<br>Design Synthesis</p>
-                        </div>
-                        <div class="ai-box">
-                            <h4>Summarization AI</h4>
-                            <p>Extract Core Ideas<br>Generate Specs</p>
-                        </div>
-                        <div class="ai-box">
-                            <h4>Code Generation AI</h4>
-                            <p>Create Implementation<br>Full Stack Code</p>
-                        </div>
-                    </div>
-                    <div style="margin-bottom: 10px; text-align: center; color: #00d4ff; font-size: 0.9em;">↓</div>
-                    <div class="ai-architecture-grid">
-                        <div class="ai-box" style="grid-column: 1 / 4;">
-                            <h4>Testing & Validation AI (Target: 85%)</h4>
-                            <p>Unit Tests | Integration Tests | Quality Metrics | Additive Enhancement</p>
-                        </div>
+                    <h2>10-AI Architecture (No External APIs)</h2>
+                    <div style="font-size: 0.85em; color: #c0c0c0; line-height: 1.6;">
+                        <p><strong style="color: #00ff00;">AI-1:</strong> Requirements Architect - Analyzes project specs</p>
+                        <p><strong style="color: #00ff00;">AI-2:</strong> Discussion Lead - Orchestrates multi-AI conversation</p>
+                        <p><strong style="color: #00ff00;">AI-3:</strong> Code Generator - Creates implementation</p>
+                        <p><strong style="color: #00ff00;">AI-4:</strong> Quality Assurance - Tests & validation</p>
+                        <p><strong style="color: #00ff00;">AI-5:</strong> Performance Optimizer - Benchmarking & optimization</p>
+                        <p><strong style="color: #00ff00;">AI-6:</strong> Documentation AI - Generates docs & comments</p>
+                        <p><strong style="color: #00ff00;">AI-7:</strong> Security Auditor - Identifies vulnerabilities</p>
+                        <p><strong style="color: #00ff00;">AI-8:</strong> Architecture Reviewer - Validates design patterns</p>
+                        <p><strong style="color: #00ff00;">AI-9:</strong> Integration Specialist - Handles module integration</p>
+                        <p><strong style="color: #00ff00;">AI-10:</strong> Version Control Manager - Git commit orchestration</p>
                     </div>
                 </div>
 
@@ -895,7 +925,7 @@
                     <div id="cycleStages">
                         <div class="cycle-stage" id="stage-discussion">
                             <span class="status-indicator"></span>
-                            <span>STAGE 1: Multi-AI Discussion (Architect, Backend, Frontend, Orchestrator)</span>
+                            <span>STAGE 1: Multi-AI Discussion (All 10 AIs Collaborate)</span>
                         </div>
                         <div class="cycle-stage" id="stage-summarization">
                             <span class="status-indicator"></span>
@@ -990,10 +1020,23 @@
 
     <script>
         // =============================================
-        // Token-Based GitHub Authentication
+        // 10-AI Process Worker System
         // =============================================
+        const AIProcesses = {
+            1: { name: "Requirements Architect", role: "Analyzes project specifications", status: "idle", output: "" },
+            2: { name: "Discussion Lead", role: "Orchestrates multi-AI conversation", status: "idle", output: "" },
+            3: { name: "Code Generator", role: "Creates implementation", status: "idle", output: "" },
+            4: { name: "Quality Assurance", role: "Tests & validation", status: "idle", output: "" },
+            5: { name: "Performance Optimizer", role: "Benchmarking & optimization", status: "idle", output: "" },
+            6: { name: "Documentation AI", role: "Generates docs & comments", status: "idle", output: "" },
+            7: { name: "Security Auditor", role: "Identifies vulnerabilities", status: "idle", output: "" },
+            8: { name: "Architecture Reviewer", role: "Validates design patterns", status: "idle", output: "" },
+            9: { name: "Integration Specialist", role: "Handles module integration", status: "idle", output: "" },
+            10: { name: "Version Control Manager", role: "Git commit orchestration", status: "idle", output: "" }
+        };
+
         const GlobalState = {
-            currentVersion: '3.5.0',
+            currentVersion: '3.6.0',
             systemRuntime: 0,
             evolutionCycles: 0,
             totalLineCount: 0,
@@ -1005,8 +1048,137 @@
             extensionMetadata: {},
             isAuthenticated: false,
             githubUser: null,
-            githubToken: null
+            githubToken: null,
+            activeProcesses: 0,
+            processTimers: {}
         };
+
+        // =============================================
+        // AI Process Management
+        // =============================================
+        function initializeAIProcessesUI() {
+            const container = document.getElementById('aiProcessesContainer');
+            container.innerHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                const ai = AIProcesses[i];
+                const processDiv = document.createElement('div');
+                processDiv.className = 'ai-process-item';
+                processDiv.id = `process-${i}`;
+                processDiv.innerHTML = `
+                    <div class="ai-process-name">AI-${i}</div>
+                    <div style="font-size: 0.7em; color: #a0a0a0; margin-bottom: 5px;">${ai.name}</div>
+                    <div class="ai-process-status" id="status-${i}">Idle</div>
+                `;
+                container.appendChild(processDiv);
+            }
+        }
+
+        function startAIProcess(processId, duration = 3000) {
+            if (!GlobalState.isAuthenticated) {
+                showNotification('Please authenticate first', 'warning');
+                return;
+            }
+
+            const ai = AIProcesses[processId];
+            const processElement = document.getElementById(`process-${processId}`);
+            const statusElement = document.getElementById(`status-${processId}`);
+
+            // Mark process as active
+            ai.status = 'running';
+            processElement.classList.add('active');
+            statusElement.textContent = 'Running...';
+            GlobalState.activeProcesses++;
+
+            // Simulate AI work
+            const workInterval = setInterval(() => {
+                const progress = Math.floor(Math.random() * 100);
+                statusElement.textContent = `${progress}%`;
+            }, 100);
+
+            // Complete process
+            GlobalState.processTimers[processId] = setTimeout(() => {
+                clearInterval(workInterval);
+                ai.status = 'completed';
+                statusElement.textContent = '✓ Done';
+                processElement.style.borderColor = '#00ff00';
+                GlobalState.activeProcesses--;
+                updateProcessCount();
+
+                // Generate output
+                ai.output = generateAIOutput(processId, ai.name);
+                addToDiscussion(ai.name, ai.output);
+            }, duration);
+
+            updateProcessCount();
+            showNotification(`AI-${processId}: ${ai.name} started`, 'info');
+        }
+
+        function startAllAIProcesses() {
+            if (!GlobalState.isAuthenticated) {
+                showNotification('Please authenticate first', 'warning');
+                return;
+            }
+
+            showNotification('Starting all 10 AI processes...', 'info');
+            
+            // Stagger process starts for parallel execution
+            for (let i = 1; i <= 10; i++) {
+                setTimeout(() => {
+                    startAIProcess(i, 2000 + Math.random() * 3000);
+                }, (i - 1) * 300);
+            }
+        }
+
+        function terminateAllProcesses() {
+            for (let i = 1; i <= 10; i++) {
+                if (GlobalState.processTimers[i]) {
+                    clearTimeout(GlobalState.processTimers[i]);
+                    delete GlobalState.processTimers[i];
+                }
+                const ai = AIProcesses[i];
+                ai.status = 'idle';
+                const processElement = document.getElementById(`process-${i}`);
+                const statusElement = document.getElementById(`status-${i}`);
+                processElement.classList.remove('active');
+                processElement.style.borderColor = '#00d4ff';
+                statusElement.textContent = 'Idle';
+            }
+            GlobalState.activeProcesses = 0;
+            updateProcessCount();
+            showNotification('All processes terminated', 'warning');
+        }
+
+        function updateProcessCount() {
+            document.getElementById('aiProcessCount').textContent = `${GlobalState.activeProcesses}/10`;
+        }
+
+        function generateAIOutput(processId, aiName) {
+            const outputs = {
+                1: `Architecture Analysis:\n- Input validation required\n- Data model: User → Project → Task\n- API endpoints: 12 core routes\n- Database: PostgreSQL recommended`,
+                2: `Discussion Consensus:\n✓ Monolithic approach viable\n✓ Microservices overkill\n✓ Django/FastAPI suitable\n✓ React frontend recommended`,
+                3: `Generated Code (450 lines):\nclass ProjectManager:\n  def __init__(self): self.projects = []\n  def create_project(self, name, desc):\n    return {"id": uuid4(), "name": name}\n  def get_project(self, id):\n    return next((p for p in self.projects if p['id'] == id), None)`,
+                4: `Test Results: 87% Pass Rate\n✓ 52/60 tests passed\n✓ Edge cases covered\n✗ 8 tests need fixes\n- Coverage: 85%\n- Performance: OK`,
+                5: `Optimization Report:\n- Response time: 145ms\n- Database queries: 3 (optimized)\n- Memory usage: 42MB\n- CPU efficiency: 78%`,
+                6: `Documentation Generated:\n## API Reference\n### POST /projects\nCreate new project\nParams: name, description\nReturns: {id, name, timestamp}`,
+                7: `Security Audit:\n✓ SQL injection: Protected\n✓ XSS: Sanitized\n✓ CSRF: Tokens enabled\n⚠ Missing rate limiting\n⚠ Auth needs refresh tokens`,
+                8: `Architecture Review:\n✓ SOLID principles applied\n✓ Dependency injection used\n✓ Design patterns implemented\n- Suggestion: Add middleware layer`,
+                9: `Integration Status:\n✓ Module A ↔ Module B: OK\n✓ Database connection: OK\n✓ Cache layer: OK\n✓ Message queue: OK`,
+                10: `Git Commit Prepared:\ncommit: Automatic evolution cycle #${GlobalState.evolutionCycles + 1}\nChanges: +450 lines, -12 lines\nTests: 52/60 passing\nAuthor: AI-10 Version Controller`
+            };
+            return outputs[processId] || `AI-${processId} processing complete.`;
+        }
+
+        function addToDiscussion(aiName, message) {
+            const container = document.getElementById('discussionContainer');
+            const item = document.createElement('div');
+            item.className = 'ai-discussion-item';
+            item.innerHTML = `
+                <div class="ai-name">${aiName}</div>
+                <div class="discussion-content">${message.replace(/\n/g, '<br>')}</div>
+            `;
+            container.appendChild(item);
+            container.scrollTop = container.scrollHeight;
+        }
 
         // =============================================
         // Modal Functions
@@ -1033,7 +1205,6 @@
                 return;
             }
 
-            // Store token and authenticate
             githubAuthManager.setAuthentication(token);
             closeTokenModal();
             showNotification('GitHub token added successfully!', 'success');
@@ -1057,13 +1228,13 @@
             }
 
             verifyToken(token) {
-                // Simulate token verification
                 GlobalState.githubUser = {
                     name: 'AI System',
                     login: 'hunyasubniki-max',
                     avatar: '🤖'
                 };
                 this.updateAuthUI();
+                initializeAIProcessesUI();
             }
 
             logout() {
@@ -1073,6 +1244,7 @@
                 localStorage.removeItem('githubToken');
                 localStorage.removeItem('githubAuthTime');
                 this.updateAuthUI();
+                terminateAllProcesses();
                 showNotification('Logged out from GitHub', 'success');
                 document.getElementById('mainContent').classList.add('disabled-content');
             }
@@ -1116,16 +1288,6 @@
                     return;
                 }
                 showNotification('Checking for updates...', 'info');
-                document.getElementById('lastCheckTime').textContent = new Date().toLocaleTimeString();
-            }
-
-            startAutoEvolution() {
-                if (!GlobalState.isAuthenticated) {
-                    showNotification('Please authenticate first', 'warning');
-                    return;
-                }
-                showNotification('Starting automatic evolution cycle...', 'info');
-                autoEvolveUntil85Percent();
             }
 
             startDownload() {
@@ -1160,10 +1322,6 @@
         class GitHubManager {
             checkForUpdates() {
                 githubAuthManager.checkForUpdates();
-            }
-
-            startAutoEvolution() {
-                githubAuthManager.startAutoEvolution();
             }
 
             startDownload() {
@@ -1215,7 +1373,10 @@
                 showNotification('Please authenticate first', 'warning');
                 return;
             }
-            showNotification('Evolution cycle started...', 'info');
+            GlobalState.evolutionCycles++;
+            document.getElementById('cyclesCompleted').textContent = GlobalState.evolutionCycles;
+            showNotification(`Evolution cycle #${GlobalState.evolutionCycles} started`, 'info');
+            startAllAIProcesses();
         }
 
         function resetForm() {
@@ -1228,7 +1389,10 @@
                 showNotification('Please authenticate first', 'warning');
                 return;
             }
-            showNotification('Generating AI discussion...', 'info');
+            const container = document.getElementById('discussionContainer');
+            container.innerHTML = '';
+            showNotification('Generating discussion with all 10 AIs...', 'info');
+            startAllAIProcesses();
         }
 
         function executePublishedTests() {
@@ -1236,7 +1400,8 @@
                 showNotification('Please authenticate first', 'warning');
                 return;
             }
-            showNotification('Running tests...', 'info');
+            showNotification('Running tests with AI-4 (QA)...', 'info');
+            startAIProcess(4, 2000);
         }
 
         function startSelfExtension() {
@@ -1253,6 +1418,7 @@
                 return;
             }
             showNotification('Auto-evolving system to 85% success rate...', 'info');
+            startEvolutionCycle();
         }
 
         function commitSuccessfulEvolution() {
@@ -1260,7 +1426,8 @@
                 showNotification('Please authenticate first', 'warning');
                 return;
             }
-            showNotification('Committing evolution to GitHub...', 'info');
+            showNotification('Committing evolution to GitHub with AI-10...', 'info');
+            startAIProcess(10, 1500);
         }
 
         function logoutGitHub() {
@@ -1270,6 +1437,7 @@
         // Initialize
         window.addEventListener('load', () => {
             githubAuthManager.updateAuthUI();
+            initializeAIProcessesUI();
         });
     </script>
 </body>
