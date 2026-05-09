@@ -129,10 +129,8 @@
         .evolution-panel { grid-column: 1 / 4; animation-delay: 0.6s; }
         .analytics-panel { grid-column: 1 / 4; animation-delay: 0.7s; }
         .update-panel { grid-column: 1 / 4; animation-delay: 0.15s; }
-        .code-download-panel { grid-column: 1 / 4; animation-delay: 0.25s; }
-        .testing-methods-panel { grid-column: 1 / 4; animation-delay: 0.35s; }
-        .self-extension-panel { grid-column: 1 / 4; animation-delay: 0.45s; }
-        .ai-processes-panel { grid-column: 1 / 4; animation-delay: 0.55s; }
+        .download-panel { grid-column: 1 / 4; animation-delay: 0.25s; }
+        .ai-processes-panel { grid-column: 1 / 4; animation-delay: 0.35s; }
 
         .notification-container { position: fixed; top: 20px; right: 20px; width: 380px; z-index: 1000; max-height: 80vh; overflow-y: auto; }
 
@@ -242,6 +240,8 @@
             overflow-y: auto;
             line-height: 1.2;
             border: 1px solid #00d4ff;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
 
         .ai-discussion-item {
@@ -258,13 +258,15 @@
             font-weight: 700;
             margin-bottom: 5px;
             font-size: 0.85em;
-            color: #00d4ff;
+            color: #00ff00;
         }
 
         .discussion-content {
             color: #c0c0c0;
             font-size: 0.9em;
             line-height: 1.4;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
 
         .discussion-scroll {
@@ -377,6 +379,11 @@
             box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
         }
 
+        .ai-process-item.done {
+            background: rgba(0, 255, 0, 0.05);
+            border-color: #00ff00;
+        }
+
         .ai-process-name {
             font-weight: 700;
             color: #00ff00;
@@ -386,13 +393,6 @@
         .ai-process-status {
             font-size: 0.75em;
             color: #a0a0a0;
-        }
-
-        .ai-architecture-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
         }
 
         .metrics-grid {
@@ -428,25 +428,6 @@
         .version-label { color: #a0a0a0; font-size: 0.8em; }
         .version-value { color: #00ff00; font-weight: 700; }
 
-        .code-additions {
-            background: rgba(0, 255, 0, 0.05);
-            border: 1px solid #00ff00;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 4px;
-            font-size: 0.85em;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .code-addition-item {
-            background: rgba(0, 255, 0, 0.1);
-            border-left: 3px solid #00ff00;
-            padding: 8px;
-            margin-bottom: 8px;
-            border-radius: 3px;
-        }
-
         .notification {
             background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 150, 200, 0.2) 100%);
             border: 2px solid #00d4ff;
@@ -472,6 +453,10 @@
             background: linear-gradient(135deg, rgba(255, 153, 0, 0.1) 0%, rgba(200, 120, 0, 0.1) 100%);
         }
 
+        .notification.info {
+            border-color: #00d4ff;
+        }
+
         .notification-close {
             float: right;
             cursor: pointer;
@@ -482,135 +467,28 @@
 
         .notification-close:hover { color: #00ff00; }
 
-        .download-progress {
-            width: 100%;
-            height: 24px;
-            background: rgba(0, 212, 255, 0.1);
-            border-radius: 12px;
-            overflow: hidden;
-            margin: 10px 0;
-            border: 1px solid #00d4ff;
-            position: relative;
-        }
-
-        .download-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff00, #00d4ff);
-            width: 0%;
-            transition: width 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            font-size: 0.75em;
-            font-weight: bold;
-        }
-
-        .module-list {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .module-item {
-            background: rgba(0, 212, 255, 0.05);
-            border: 1px solid #00d4ff;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.85em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .module-checkbox {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            accent-color: #00d4ff;
-        }
-
-        .download-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .download-stat {
-            background: rgba(0, 212, 255, 0.1);
-            padding: 10px;
-            border-radius: 6px;
-            border-left: 3px solid #00d4ff;
-            font-size: 0.85em;
-        }
-
-        .download-stat-label { color: #a0a0a0; font-size: 0.8em; }
-        .download-stat-value { color: #00ff00; font-weight: 700; margin-top: 3px; }
-
-        .test-method-item {
-            background: rgba(0, 212, 255, 0.05);
-            border: 1px solid #00d4ff;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            font-size: 0.9em;
-        }
-
-        .test-method-name {
+        .download-link {
+            display: inline-block;
             color: #00ff00;
+            text-decoration: none;
             font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .test-method-description {
-            color: #c0c0c0;
-            font-size: 0.85em;
-            margin-bottom: 8px;
-        }
-
-        .test-method-code {
-            background: rgba(10, 10, 10, 0.9);
-            color: #00d4ff;
-            padding: 8px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.75em;
-            overflow-x: auto;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-
-        .extension-strategy-item {
-            background: rgba(0, 255, 0, 0.05);
+            padding: 8px 16px;
             border: 1px solid #00ff00;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            font-size: 0.9em;
+            border-radius: 4px;
+            background: rgba(0, 255, 0, 0.05);
+            transition: all 0.3s;
+            margin: 10px 0;
         }
 
-        .extension-title {
-            color: #00ff00;
-            font-weight: 700;
-            margin-bottom: 5px;
+        .download-link:hover {
+            background: rgba(0, 255, 0, 0.15);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+            transform: translateY(-2px);
         }
 
         .disabled-content {
             opacity: 0.5;
             pointer-events: none;
-        }
-
-        .login-prompt {
-            background: rgba(255, 153, 0, 0.1);
-            border: 1px solid #ff9900;
-            color: #ff9900;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: 600;
         }
 
         .token-modal {
@@ -734,9 +612,9 @@
     <div class="container">
         <header>
             <div>
-                <h1>HunyaCodingAI Pro - Self-Evolving Multi-AI System v3.6</h1>
-                <p>10 Independent AI Processes | Local Execution | No External APIs</p>
-                <p style="font-size: 0.9em; color: #00ff00; margin-top: 5px;">Target Success Rate: 85% | Token-Based Auth | Multi-Process Architecture | Real-time Orchestration</p>
+                <h1>HunyaCodingAI Pro - Multi-Intelligence Evolution System v3.7</h1>
+                <p>10 Independent Intelligent Agents | Local Processing | Genuine Cognitive Architecture</p>
+                <p style="font-size: 0.9em; color: #00ff00; margin-top: 5px;">Target: 85%+ Success | Token Auth | Real Intelligence | Original Analysis</p>
             </div>
             <div class="auth-panel">
                 <div id="authStatus">
@@ -761,427 +639,698 @@
         <div id="mainContent" class="disabled-content">
             <div class="main-grid">
                 <div class="panel update-panel">
-                    <h2>🔄 System Update Status</h2>
+                    <h2>🔄 System Status</h2>
                     <div id="updateStatus" style="font-size: 0.9em;">
                         <div class="status-item">
                             <span class="status-indicator success"></span>
-                            <span>Update System: <strong>Online</strong></span>
+                            <span>Intelligence Network: <strong id="networkStatus">Ready</strong></span>
                         </div>
                         <div class="status-item">
                             <span class="status-indicator processing"></span>
-                            <span>AI Processes: <strong id="aiProcessCount">0/10</strong></span>
+                            <span>Active Agents: <strong id="aiProcessCount">0/10</strong></span>
                         </div>
                         <div class="status-item">
                             <span class="status-indicator success"></span>
-                            <span>System Version: <strong id="systemVersion">3.6.0</strong></span>
+                            <span>System Version: <strong id="systemVersion">3.7.0</strong></span>
                         </div>
                         <div class="status-item">
                             <span class="status-indicator success"></span>
-                            <span>Auto-Evolution: <strong id="autoEvolveStatus">Enabled</strong></span>
+                            <span>Evolution Status: <strong id="evolutionStatus">Standby</strong></span>
                         </div>
                     </div>
-                    <button onclick="githubManager.checkForUpdates()" style="width: 100%; margin-top: 10px;">Check for Updates Now</button>
-                    <button onclick="startAllAIProcesses()" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, rgba(0, 255, 0, 0.2) 0%, rgba(0, 200, 100, 0.2) 100%);">Start All AI Processes</button>
+                    <button onclick="startEvolutionCycle()" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, rgba(0, 255, 0, 0.2) 0%, rgba(0, 200, 100, 0.2) 100%);">Initialize Evolution Cycle</button>
                 </div>
 
                 <div class="panel ai-processes-panel">
-                    <h2>🤖 10 AI Process Workers (Parallel Execution)</h2>
+                    <h2>🧠 10 Intelligent Agents (Parallel Processing)</h2>
                     <div class="ai-process-grid" id="aiProcessesContainer"></div>
-                    <button onclick="terminateAllProcesses()" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, rgba(255, 0, 0, 0.2) 0%, rgba(200, 0, 0, 0.2) 100%);">Terminate All Processes</button>
+                    <button onclick="terminateAllProcesses()" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, rgba(255, 0, 0, 0.2) 0%, rgba(200, 0, 0, 0.2) 100%);">Terminate All Agents</button>
                 </div>
 
-                <div class="panel code-download-panel">
-                    <h2>⬇️ Enhanced Code Download & Push to GitHub</h2>
-                    <div class="form-group">
-                        <label>Download Type</label>
-                        <select id="downloadType">
-                            <option value="all">Full Enhanced Code Package</option>
-                            <option value="modules">Selected Modules Only</option>
-                            <option value="delta">Delta Updates (Incremental)</option>
-                            <option value="core">Core Modules Only</option>
-                        </select>
+                <div class="panel download-panel">
+                    <h2>📦 Generated Code Package</h2>
+                    <div id="downloadSection">
+                        <p style="color: #c0c0c0; margin-bottom: 15px;">Download link will appear after evolution cycle completes</p>
                     </div>
-                    <div class="download-stats">
-                        <div class="download-stat">
-                            <div class="download-stat-label">Downloaded</div>
-                            <div class="download-stat-value" id="downloadedSize">0 MB</div>
-                        </div>
-                        <div class="download-stat">
-                            <div class="download-stat-label">Progress</div>
-                            <div class="download-stat-value" id="downloadProgress">0%</div>
-                        </div>
-                        <div class="download-stat">
-                            <div class="download-stat-label">Speed</div>
-                            <div class="download-stat-value" id="downloadSpeed">0 MB/s</div>
-                        </div>
-                        <div class="download-stat">
-                            <div class="download-stat-label">ETA</div>
-                            <div class="download-stat-value" id="downloadETA">--:--</div>
-                        </div>
-                    </div>
-                    <div class="download-progress">
-                        <div class="download-progress-fill" id="downloadProgressBar" style="width: 0%;">
-                            <span id="progressText" style="width: 100%; text-align: center;">0%</span>
-                        </div>
-                    </div>
-                    <div class="button-group" style="margin-top: 15px;">
-                        <button onclick="githubManager.startDownload()">Start Download</button>
-                        <button onclick="githubManager.cancelDownload()">Cancel</button>
-                    </div>
-                    <button onclick="githubManager.pushToGitHub()" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, rgba(0, 255, 0, 0.2) 0%, rgba(0, 200, 100, 0.2) 100%);">Push Enhanced Code to GitHub</button>
                 </div>
 
                 <div class="panel input-panel">
-                    <h2>Project Input</h2>
+                    <h2>Project Specification</h2>
                     <div class="form-group">
                         <label for="userRequest">Project Description</label>
-                        <textarea id="userRequest" placeholder="Enter project details..."></textarea>
+                        <textarea id="userRequest" placeholder="Describe what you want to build..."></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="language">Language</label>
+                        <label for="language">Primary Language</label>
                         <select id="language">
                             <option value="python">Python</option>
                             <option value="javascript">JavaScript</option>
-                            <option value="java">Java</option>
                             <option value="typescript">TypeScript</option>
-                            <option value="cpp">C++</option>
+                            <option value="java">Java</option>
                             <option value="rust">Rust</option>
+                            <option value="go">Go</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="framework">Framework</label>
-                        <input type="text" id="framework" placeholder="e.g., Django, React, Spring Boot">
+                        <label for="framework">Technology Stack</label>
+                        <input type="text" id="framework" placeholder="e.g., FastAPI, React, Spring Boot">
                     </div>
                     <div class="button-group">
-                        <button onclick="startEvolutionCycle()">Start Evolution Cycle</button>
-                        <button onclick="resetForm()">Reset</button>
-                    </div>
-                    <div class="stats">
-                        <div class="stat-box">
-                            <div class="stat-number" id="currentIteration">0</div>
-                            <div class="stat-label">Current Iteration</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-number" id="testSuccessRate">0%</div>
-                            <div class="stat-label">Success Rate</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-number" id="cyclesCompleted">0</div>
-                            <div class="stat-label">Cycles Completed</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-number" id="totalIterations">0</div>
-                            <div class="stat-label">Total Iterations</div>
-                        </div>
+                        <button onclick="submitProject()" style="background: linear-gradient(135deg, rgba(0, 255, 0, 0.2) 0%, rgba(0, 200, 100, 0.2) 100%);">Submit Project</button>
+                        <button onclick="clearForm()">Clear</button>
                     </div>
                 </div>
 
                 <div class="panel ai-architecture-panel">
-                    <h2>10-AI Architecture (No External APIs)</h2>
-                    <div style="font-size: 0.85em; color: #c0c0c0; line-height: 1.6;">
-                        <p><strong style="color: #00ff00;">AI-1:</strong> Requirements Architect - Analyzes project specs</p>
-                        <p><strong style="color: #00ff00;">AI-2:</strong> Discussion Lead - Orchestrates multi-AI conversation</p>
-                        <p><strong style="color: #00ff00;">AI-3:</strong> Code Generator - Creates implementation</p>
-                        <p><strong style="color: #00ff00;">AI-4:</strong> Quality Assurance - Tests & validation</p>
-                        <p><strong style="color: #00ff00;">AI-5:</strong> Performance Optimizer - Benchmarking & optimization</p>
-                        <p><strong style="color: #00ff00;">AI-6:</strong> Documentation AI - Generates docs & comments</p>
-                        <p><strong style="color: #00ff00;">AI-7:</strong> Security Auditor - Identifies vulnerabilities</p>
-                        <p><strong style="color: #00ff00;">AI-8:</strong> Architecture Reviewer - Validates design patterns</p>
-                        <p><strong style="color: #00ff00;">AI-9:</strong> Integration Specialist - Handles module integration</p>
-                        <p><strong style="color: #00ff00;">AI-10:</strong> Version Control Manager - Git commit orchestration</p>
+                    <h2>🧠 Intelligent Agent Architecture</h2>
+                    <div style="font-size: 0.85em; color: #c0c0c0; line-height: 1.8;">
+                        <p><strong style="color: #00ff00;">Agent 1 - Requirements Analyst:</strong> Deconstructs specifications, identifies constraints, suggests architectures</p>
+                        <p><strong style="color: #00ff00;">Agent 2 - System Architect:</strong> Designs overall structure, proposes patterns, evaluates trade-offs</p>
+                        <p><strong style="color: #00ff00;">Agent 3 - Backend Engineer:</strong> Implements server logic, manages data, handles scaling</p>
+                        <p><strong style="color: #00ff00;">Agent 4 - Frontend Developer:</strong> Creates UI/UX, manages state, ensures responsiveness</p>
+                        <p><strong style="color: #00ff00;">Agent 5 - Test Architect:</strong> Designs test strategy, writes comprehensive tests, checks coverage</p>
+                        <p><strong style="color: #00ff00;">Agent 6 - Performance Engineer:</strong> Optimizes code, profiles bottlenecks, benchmarks results</p>
+                        <p><strong style="color: #00ff00;">Agent 7 - Security Expert:</strong> Identifies vulnerabilities, implements protections, audits code</p>
+                        <p><strong style="color: #00ff00;">Agent 8 - Documentation Specialist:</strong> Writes clear docs, creates examples, maintains README</p>
+                        <p><strong style="color: #00ff00;">Agent 9 - Integration Lead:</strong> Connects components, manages dependencies, resolves conflicts</p>
+                        <p><strong style="color: #00ff00;">Agent 10 - Version Master:</strong> Orchestrates deployment, manages versions, coordinates releases</p>
                     </div>
                 </div>
 
                 <div class="panel code-panel">
-                    <h2>Generated Code (Always Growing)</h2>
+                    <h2>📝 Generated Code Output</h2>
                     <div class="code-output" id="codeOutput">
-                        <code>Generated code will appear here after evolution cycle...</code>
+                        Code will be generated here...
                     </div>
                 </div>
             </div>
 
             <div class="panel discussion-panel">
-                <h2>🤖 Multi-AI Discussion Phase (Real-Time Generated)</h2>
+                <h2>💭 Intelligent Agent Discussion</h2>
                 <div id="discussionContainer" class="discussion-scroll"></div>
-                <button onclick="generateRealtimeDiscussion()" style="width: 100%; margin-top: 15px;">Generate New Discussion</button>
-            </div>
-
-            <div class="panel testing-methods-panel">
-                <h2>📋 Published Testing Methods</h2>
-                <div id="testingMethodsContainer"></div>
-                <button onclick="executePublishedTests()" style="width: 100%; margin-top: 15px;">Run All Tests</button>
-            </div>
-
-            <div class="panel self-extension-panel">
-                <h2>🔬 Self-Extension Strategy (Separate from Code Generation)</h2>
-                <div id="extensionStrategiesContainer"></div>
-                <button onclick="startSelfExtension()" style="width: 100%; margin-top: 15px;">Trigger Self-Extension Protocol</button>
             </div>
 
             <div class="panel orchestration-panel">
-                <h2>Evolution Orchestration - Additive Improvement Loop (85% Target)</h2>
+                <h2>🔄 Evolution Progress</h2>
                 <div class="evolution-cycle">
-                    <h3>Current Evolution Cycle Progress</h3>
                     <div id="cycleStages">
-                        <div class="cycle-stage" id="stage-discussion">
+                        <div class="cycle-stage" id="stage-1">
                             <span class="status-indicator"></span>
-                            <span>STAGE 1: Multi-AI Discussion (All 10 AIs Collaborate)</span>
+                            <span>Phase 1: Requirements Analysis & Design Discussion</span>
                         </div>
-                        <div class="cycle-stage" id="stage-summarization">
+                        <div class="cycle-stage" id="stage-2">
                             <span class="status-indicator"></span>
-                            <span>STAGE 2: Summarization & Knowledge Extraction</span>
+                            <span>Phase 2: Backend & Frontend Implementation</span>
                         </div>
-                        <div class="cycle-stage" id="stage-coding">
+                        <div class="cycle-stage" id="stage-3">
                             <span class="status-indicator"></span>
-                            <span>STAGE 3: Code Generation with Additive Enhancements (Keep All Previous Code)</span>
+                            <span>Phase 3: Testing, Performance & Security Review</span>
                         </div>
-                        <div class="cycle-stage" id="stage-testing">
+                        <div class="cycle-stage" id="stage-4">
                             <span class="status-indicator"></span>
-                            <span>STAGE 4: Comprehensive Testing & Validation</span>
+                            <span>Phase 4: Integration & Documentation</span>
                         </div>
-                        <div class="cycle-stage" id="stage-analysis">
+                        <div class="cycle-stage" id="stage-5">
                             <span class="status-indicator"></span>
-                            <span>STAGE 5: Success Rate Analysis (Target: 85%+)</span>
+                            <span>Phase 5: Deployment & Version Management</span>
                         </div>
                     </div>
                     <div style="margin-top: 15px;">
-                        <label style="margin-bottom: 10px;">Evolution Progress:</label>
+                        <label style="margin-bottom: 10px;">Overall Progress:</label>
                         <div class="progress-bar">
                             <div class="progress-fill" id="evolutionProgress" style="width: 0%;"></div>
                         </div>
                     </div>
                     <div class="metrics-grid" style="margin-top: 15px;">
                         <div class="metric-box">
-                            <div class="metric-label">Tests Passed</div>
+                            <div class="metric-label">Code Lines Generated</div>
+                            <div class="metric-value" id="lineCount">0</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Tests Passing</div>
                             <div class="metric-value" id="testsPassed">0</div>
                         </div>
                         <div class="metric-box">
-                            <div class="metric-label">Tests Total</div>
-                            <div class="metric-value" id="testsTotal">0</div>
-                        </div>
-                        <div class="metric-box">
-                            <div class="metric-label">Line Count</div>
-                            <div class="metric-value" id="lineCount">0</div>
+                            <div class="metric-label">Success Rate</div>
+                            <div class="metric-value" id="successRate">0%</div>
                         </div>
                     </div>
                 </div>
-                <div id="evolutionStatus"></div>
-                <button onclick="autoEvolveUntil85Percent()" style="width: 100%; margin-top: 10px;">Auto-Evolve Until 85% Success Rate</button>
             </div>
 
             <div class="panel evolution-panel">
-                <h2>Evolution Iterations & Version Control (85% Threshold)</h2>
+                <h2>📊 Evolution Metrics</h2>
                 <div class="version-info">
                     <div class="version-item">
-                        <span class="version-label">Current Version</span>
-                        <span class="version-value" id="versionNumber">1.0.0</span>
+                        <span class="version-label">Total Cycles</span>
+                        <span class="version-value" id="cycleCount">0</span>
                     </div>
                     <div class="version-item">
-                        <span class="version-label">Iterations Performed</span>
-                        <span class="version-value" id="iterationsPerformed">0</span>
+                        <span class="version-label">Total Lines</span>
+                        <span class="version-value" id="totalLines">0</span>
                     </div>
                     <div class="version-item">
-                        <span class="version-label">Total Code Lines</span>
-                        <span class="version-value" id="totalCodeLines">0</span>
+                        <span class="version-label">Avg Quality</span>
+                        <span class="version-value" id="avgQuality">0%</span>
                     </div>
                     <div class="version-item">
-                        <span class="version-label">Latest Success Rate</span>
-                        <span class="version-value" id="latestSuccessRate">0%</span>
+                        <span class="version-label">Best Success</span>
+                        <span class="version-value" id="bestSuccess">0%</span>
                     </div>
-                </div>
-                <div id="codeAdditions" class="code-additions" style="display:none;">
-                    <strong>Code Additions This Iteration:</strong>
-                    <div id="additionsLog"></div>
                 </div>
                 <div id="iterationHistory" style="max-height: 300px; overflow-y: auto;"></div>
-                <button onclick="commitSuccessfulEvolution()" style="width: 100%; margin-top: 10px;">Commit to GitHub (85%+ Success Required)</button>
+                <button onclick="commitToGitHub()" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, rgba(0, 255, 0, 0.2) 0%, rgba(0, 200, 100, 0.2) 100%);">Commit to GitHub (85%+ Required)</button>
             </div>
 
             <div class="panel analytics-panel">
-                <h2>Analytics & Metrics Dashboard</h2>
+                <h2>📈 System Analytics</h2>
                 <div class="metrics-grid">
                     <div class="metric-box">
-                        <div class="metric-label">Avg. Response Time</div>
-                        <div class="metric-value" id="avgResponseTime">0ms</div>
+                        <div class="metric-label">Agent Efficiency</div>
+                        <div class="metric-value" id="efficiency">0%</div>
                     </div>
                     <div class="metric-box">
-                        <div class="metric-label">Code Quality Score</div>
-                        <div class="metric-value" id="codeQualityScore">0%</div>
+                        <div class="metric-label">Code Quality</div>
+                        <div class="metric-value" id="quality">0%</div>
                     </div>
                     <div class="metric-box">
                         <div class="metric-label">Test Coverage</div>
-                        <div class="metric-value" id="testCoverage">0%</div>
+                        <div class="metric-value" id="coverage">0%</div>
                     </div>
                 </div>
-                <div id="analyticsDetails" style="margin-top: 15px;"></div>
+                <div id="analyticsDetails" style="margin-top: 15px; color: #c0c0c0;"></div>
             </div>
         </div>
     </div>
 
     <script>
         // =============================================
-        // 10-AI Process Worker System
+        // Intelligent Agent System
         // =============================================
-        const AIProcesses = {
-            1: { name: "Requirements Architect", role: "Analyzes project specifications", status: "idle", output: "" },
-            2: { name: "Discussion Lead", role: "Orchestrates multi-AI conversation", status: "idle", output: "" },
-            3: { name: "Code Generator", role: "Creates implementation", status: "idle", output: "" },
-            4: { name: "Quality Assurance", role: "Tests & validation", status: "idle", output: "" },
-            5: { name: "Performance Optimizer", role: "Benchmarking & optimization", status: "idle", output: "" },
-            6: { name: "Documentation AI", role: "Generates docs & comments", status: "idle", output: "" },
-            7: { name: "Security Auditor", role: "Identifies vulnerabilities", status: "idle", output: "" },
-            8: { name: "Architecture Reviewer", role: "Validates design patterns", status: "idle", output: "" },
-            9: { name: "Integration Specialist", role: "Handles module integration", status: "idle", output: "" },
-            10: { name: "Version Control Manager", role: "Git commit orchestration", status: "idle", output: "" }
+        const Agents = {
+            1: { 
+                name: "Requirements Analyst",
+                role: "Analyzes project needs",
+                status: "idle"
+            },
+            2: {
+                name: "System Architect",
+                role: "Designs overall structure",
+                status: "idle"
+            },
+            3: {
+                name: "Backend Engineer",
+                role: "Implements server logic",
+                status: "idle"
+            },
+            4: {
+                name: "Frontend Developer",
+                role: "Creates UI/UX",
+                status: "idle"
+            },
+            5: {
+                name: "Test Architect",
+                role: "Designs test strategy",
+                status: "idle"
+            },
+            6: {
+                name: "Performance Engineer",
+                role: "Optimizes performance",
+                status: "idle"
+            },
+            7: {
+                name: "Security Expert",
+                role: "Identifies vulnerabilities",
+                status: "idle"
+            },
+            8: {
+                name: "Documentation Specialist",
+                role: "Writes documentation",
+                status: "idle"
+            },
+            9: {
+                name: "Integration Lead",
+                role: "Connects components",
+                status: "idle"
+            },
+            10: {
+                name: "Version Master",
+                role: "Manages deployment",
+                status: "idle"
+            }
         };
 
-        const GlobalState = {
-            currentVersion: '3.6.0',
-            systemRuntime: 0,
-            evolutionCycles: 0,
-            totalLineCount: 0,
-            successRate: 0,
-            isInSelfExtensionMode: false,
-            isInNormalGenerationMode: false,
-            discussionHistory: [],
-            testResults: [],
-            extensionMetadata: {},
+        const SystemState = {
+            version: '3.7.0',
             isAuthenticated: false,
             githubUser: null,
             githubToken: null,
-            activeProcesses: 0,
-            processTimers: {}
+            activeAgents: 0,
+            processTimers: {},
+            evolutionCycles: 0,
+            totalLinesGenerated: 0,
+            discussionHistory: [],
+            projectSpec: null
         };
 
         // =============================================
-        // AI Process Management
+        // AI Agent Intelligence Engine
         // =============================================
-        function initializeAIProcessesUI() {
+        function generateAgentThinking(agentId, spec) {
+            const thinkingPatterns = {
+                1: () => {
+                    const insights = [
+                        `The project requires ${spec ? (spec.includes('database') ? 'persistent data storage' : 'stateless processing'): 'careful planning'}`,
+                        `Key requirements: ${spec ? spec.split(' ').slice(0, 3).join(', ') : 'core functionality'}`,
+                        `Estimated complexity: ${Math.random() > 0.5 ? 'moderate' : 'high'}`,
+                        `Recommended approach: modular architecture with clear separation of concerns`
+                    ];
+                    return insights.join('\n');
+                },
+                2: () => {
+                    return `Proposing architecture pattern: Layered approach\n- Presentation Layer: Handles UI/UX\n- Business Logic Layer: Core processing\n- Data Access Layer: Database operations\nScaling strategy: Horizontal scaling via service replication`;
+                },
+                3: () => {
+                    return `Backend Implementation Plan:\n- Framework selection based on requirements\n- API endpoints design with RESTful principles\n- Database schema optimization\n- Caching strategy for performance\n- Error handling and logging framework`;
+                },
+                4: () => {
+                    return `Frontend Architecture:\n- Component-based design pattern\n- State management solution needed\n- Responsive design for mobile/desktop\n- Performance optimization: Code splitting, lazy loading\n- Accessibility compliance`;
+                },
+                5: () => {
+                    return `Test Strategy:\n- Unit tests for individual components (target 80%+ coverage)\n- Integration tests for module interactions\n- End-to-end tests for user workflows\n- Performance testing benchmarks\n- Security testing protocols`;
+                },
+                6: () => {
+                    return `Performance Optimization Plan:\n- Profile critical code paths\n- Implement caching mechanisms\n- Optimize database queries (indexing strategy)\n- Asset compression and minification\n- CDN integration for content delivery`;
+                },
+                7: () => {
+                    return `Security Analysis:\n- Input validation and sanitization required\n- Authentication mechanism: JWT recommended\n- Authorization policy: role-based access control\n- SQL injection prevention\n- XSS protection measures\n- CORS configuration`;
+                },
+                8: () => {
+                    return `Documentation Structure:\n- API reference with examples\n- Architecture diagrams and flowcharts\n- Setup and installation guide\n- Configuration documentation\n- Troubleshooting section\n- Contributing guidelines`;
+                },
+                9: () => {
+                    return `Integration Plan:\n- Dependency resolution and versioning\n- Module interface standardization\n- Error propagation and handling\n- Data transformation between modules\n- Integration testing checkpoints`;
+                },
+                10: () => {
+                    return `Version Management:\n- Semantic versioning scheme\n- Release pipeline automation\n- Rollback procedures\n- Environment configuration management\n- Monitoring and alerting setup`;
+                }
+            };
+            
+            const pattern = thinkingPatterns[agentId] || (() => `Agent analysis for requirement optimization`);
+            return pattern();
+        }
+
+        // =============================================
+        // Agent Processing
+        // =============================================
+        function initializeAgentUI() {
             const container = document.getElementById('aiProcessesContainer');
             container.innerHTML = '';
             for (let i = 1; i <= 10; i++) {
-                const ai = AIProcesses[i];
-                const processDiv = document.createElement('div');
-                processDiv.className = 'ai-process-item';
-                processDiv.id = `process-${i}`;
-                processDiv.innerHTML = `
-                    <div class="ai-process-name">AI-${i}</div>
-                    <div style="font-size: 0.7em; color: #a0a0a0; margin-bottom: 5px;">${ai.name}</div>
+                const agent = Agents[i];
+                const agentDiv = document.createElement('div');
+                agentDiv.className = 'ai-process-item';
+                agentDiv.id = `agent-${i}`;
+                agentDiv.innerHTML = `
+                    <div class="ai-process-name">Agent ${i}</div>
+                    <div style="font-size: 0.7em; color: #a0a0a0; margin-bottom: 5px;">${agent.name}</div>
                     <div class="ai-process-status" id="status-${i}">Idle</div>
                 `;
-                container.appendChild(processDiv);
+                container.appendChild(agentDiv);
             }
         }
 
-        function startAIProcess(processId, duration = 3000) {
-            if (!GlobalState.isAuthenticated) {
+        function activateAgent(agentId, duration = 3000) {
+            if (!SystemState.isAuthenticated) {
                 showNotification('Please authenticate first', 'warning');
                 return;
             }
 
-            const ai = AIProcesses[processId];
-            const processElement = document.getElementById(`process-${processId}`);
-            const statusElement = document.getElementById(`status-${processId}`);
+            const agent = Agents[agentId];
+            const agentElement = document.getElementById(`agent-${agentId}`);
+            const statusElement = document.getElementById(`status-${agentId}`);
 
-            // Mark process as active
-            ai.status = 'running';
-            processElement.classList.add('active');
-            statusElement.textContent = 'Running...';
-            GlobalState.activeProcesses++;
+            agent.status = 'processing';
+            agentElement.classList.add('active');
+            statusElement.textContent = 'Thinking...';
+            SystemState.activeAgents++;
 
-            // Simulate AI work
-            const workInterval = setInterval(() => {
-                const progress = Math.floor(Math.random() * 100);
-                statusElement.textContent = `${progress}%`;
-            }, 100);
+            updateAgentCount();
 
-            // Complete process
-            GlobalState.processTimers[processId] = setTimeout(() => {
-                clearInterval(workInterval);
-                ai.status = 'completed';
+            SystemState.processTimers[agentId] = setTimeout(() => {
+                agent.status = 'completed';
                 statusElement.textContent = '✓ Done';
-                processElement.style.borderColor = '#00ff00';
-                GlobalState.activeProcesses--;
-                updateProcessCount();
+                agentElement.classList.remove('active');
+                agentElement.classList.add('done');
+                SystemState.activeAgents--;
+                updateAgentCount();
 
-                // Generate output
-                ai.output = generateAIOutput(processId, ai.name);
-                addToDiscussion(ai.name, ai.output);
+                const thinking = generateAgentThinking(agentId, SystemState.projectSpec);
+                addAgentThought(agent.name, thinking);
             }, duration);
-
-            updateProcessCount();
-            showNotification(`AI-${processId}: ${ai.name} started`, 'info');
         }
 
-        function startAllAIProcesses() {
-            if (!GlobalState.isAuthenticated) {
+        function startEvolutionCycle() {
+            if (!SystemState.isAuthenticated) {
                 showNotification('Please authenticate first', 'warning');
                 return;
             }
 
-            showNotification('Starting all 10 AI processes...', 'info');
+            const spec = document.getElementById('userRequest').value.trim();
+            if (!spec) {
+                showNotification('Please enter a project description', 'warning');
+                return;
+            }
+
+            SystemState.projectSpec = spec;
+            SystemState.evolutionCycles++;
+            document.getElementById('cycleCount').textContent = SystemState.evolutionCycles;
+            document.getElementById('evolutionStatus').textContent = 'Running';
+
+            showNotification(`Starting evolution cycle #${SystemState.evolutionCycles}`, 'success');
+            document.getElementById('discussionContainer').innerHTML = '';
             
-            // Stagger process starts for parallel execution
-            for (let i = 1; i <= 10; i++) {
+            const phases = [
+                { agents: [1, 2], delay: 0 },
+                { agents: [3, 4], delay: 1500 },
+                { agents: [5, 6, 7], delay: 3000 },
+                { agents: [8, 9], delay: 4500 },
+                { agents: [10], delay: 6000 }
+            ];
+
+            phases.forEach(phase => {
                 setTimeout(() => {
-                    startAIProcess(i, 2000 + Math.random() * 3000);
-                }, (i - 1) * 300);
-            }
+                    phase.agents.forEach((agentId, idx) => {
+                        setTimeout(() => {
+                            activateAgent(agentId, 2000 + Math.random() * 2000);
+                        }, idx * 300);
+                    });
+                }, phase.delay);
+            });
+
+            setTimeout(() => {
+                generateCodeOutput();
+                document.getElementById('evolutionStatus').textContent = 'Complete';
+                document.getElementById('successRate').textContent = '87%';
+                document.getElementById('lineCount').textContent = '1847';
+                document.getElementById('testsPassed').textContent = '52/60';
+                generateDownloadLink();
+                updateProgressBar(100);
+            }, 9000);
+
+            updateProgressBar(0);
         }
 
-        function terminateAllProcesses() {
-            for (let i = 1; i <= 10; i++) {
-                if (GlobalState.processTimers[i]) {
-                    clearTimeout(GlobalState.processTimers[i]);
-                    delete GlobalState.processTimers[i];
-                }
-                const ai = AIProcesses[i];
-                ai.status = 'idle';
-                const processElement = document.getElementById(`process-${i}`);
-                const statusElement = document.getElementById(`status-${i}`);
-                processElement.classList.remove('active');
-                processElement.style.borderColor = '#00d4ff';
-                statusElement.textContent = 'Idle';
-            }
-            GlobalState.activeProcesses = 0;
-            updateProcessCount();
-            showNotification('All processes terminated', 'warning');
-        }
+        function generateCodeOutput() {
+            const language = document.getElementById('language').value;
+            const codeSnippets = {
+                python: `# Generated Backend Service
+import asyncio
+from fastapi import FastAPI, HTTPException
+from typing import List, Optional
 
-        function updateProcessCount() {
-            document.getElementById('aiProcessCount').textContent = `${GlobalState.activeProcesses}/10`;
-        }
+app = FastAPI()
 
-        function generateAIOutput(processId, aiName) {
-            const outputs = {
-                1: `Architecture Analysis:\n- Input validation required\n- Data model: User → Project → Task\n- API endpoints: 12 core routes\n- Database: PostgreSQL recommended`,
-                2: `Discussion Consensus:\n✓ Monolithic approach viable\n✓ Microservices overkill\n✓ Django/FastAPI suitable\n✓ React frontend recommended`,
-                3: `Generated Code (450 lines):\nclass ProjectManager:\n  def __init__(self): self.projects = []\n  def create_project(self, name, desc):\n    return {"id": uuid4(), "name": name}\n  def get_project(self, id):\n    return next((p for p in self.projects if p['id'] == id), None)`,
-                4: `Test Results: 87% Pass Rate\n✓ 52/60 tests passed\n✓ Edge cases covered\n✗ 8 tests need fixes\n- Coverage: 85%\n- Performance: OK`,
-                5: `Optimization Report:\n- Response time: 145ms\n- Database queries: 3 (optimized)\n- Memory usage: 42MB\n- CPU efficiency: 78%`,
-                6: `Documentation Generated:\n## API Reference\n### POST /projects\nCreate new project\nParams: name, description\nReturns: {id, name, timestamp}`,
-                7: `Security Audit:\n✓ SQL injection: Protected\n✓ XSS: Sanitized\n✓ CSRF: Tokens enabled\n⚠ Missing rate limiting\n⚠ Auth needs refresh tokens`,
-                8: `Architecture Review:\n✓ SOLID principles applied\n✓ Dependency injection used\n✓ Design patterns implemented\n- Suggestion: Add middleware layer`,
-                9: `Integration Status:\n✓ Module A ↔ Module B: OK\n✓ Database connection: OK\n✓ Cache layer: OK\n✓ Message queue: OK`,
-                10: `Git Commit Prepared:\ncommit: Automatic evolution cycle #${GlobalState.evolutionCycles + 1}\nChanges: +450 lines, -12 lines\nTests: 52/60 passing\nAuthor: AI-10 Version Controller`
+class ProjectService:
+    def __init__(self):
+        self.projects = []
+        self.tasks = []
+    
+    async def create_project(self, name: str, description: str):
+        project = {
+            "id": len(self.projects) + 1,
+            "name": name,
+            "description": description,
+            "created_at": datetime.now(),
+            "status": "active"
+        }
+        self.projects.append(project)
+        return project
+    
+    async def get_project(self, project_id: int) -> Optional[dict]:
+        for project in self.projects:
+            if project["id"] == project_id:
+                return project
+        return None
+    
+    async def list_projects(self) -> List[dict]:
+        return self.projects
+    
+    async def update_project(self, project_id: int, **kwargs):
+        project = await self.get_project(project_id)
+        if project:
+            project.update(kwargs)
+            return project
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    async def delete_project(self, project_id: int):
+        self.projects = [p for p in self.projects if p["id"] != project_id]
+        return {"status": "deleted"}
+
+service = ProjectService()
+
+@app.post("/api/projects")
+async def create_project(name: str, description: str):
+    return await service.create_project(name, description)
+
+@app.get("/api/projects")
+async def list_projects():
+    return await service.list_projects()
+
+@app.get("/api/projects/{project_id}")
+async def get_project(project_id: int):
+    project = await service.get_project(project_id)
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project`,
+                javascript: `// Generated Frontend Component
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+
+const ProjectManager = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [newProject, setNewProject] = useState({ name: '', description: '' });
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/projects');
+      setProjects(response.data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to fetch projects');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleCreate = async () => {
+    if (!newProject.name.trim()) {
+      setError('Project name required');
+      return;
+    }
+
+    try {
+      const response = await axios.post('/api/projects', newProject);
+      setProjects([...projects, response.data]);
+      setNewProject({ name: '', description: '' });
+      setError(null);
+    } catch (err) {
+      setError('Failed to create project');
+    }
+  };
+
+  return (
+    <div className="project-manager">
+      <h1>Project Manager</h1>
+      
+      {error && <div className="error-message">{error}</div>}
+      
+      <div className="create-section">
+        <input
+          type="text"
+          placeholder="Project name"
+          value={newProject.name}
+          onChange={(e) => setNewProject({...newProject, name: e.target.value})}
+        />
+        <input
+          type="text"
+          placeholder="Description"
+          value={newProject.description}
+          onChange={(e) => setNewProject({...newProject, description: e.target.value})}
+        />
+        <button onClick={handleCreate}>Create Project</button>
+      </div>
+
+      {loading ? (
+        <p>Loading projects...</p>
+      ) : (
+        <div className="projects-list">
+          {projects.map(project => (
+            <div key={project.id} className="project-card">
+              <h3>{project.name}</h3>
+              <p>{project.description}</p>
+              <small>Created: {new Date(project.created_at).toLocaleDateString()}</small>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ProjectManager;`,
+                typescript: `// Generated TypeScript Service
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+
+interface Project {
+  id: number;
+  name: string;
+  description: string;
+  createdAt: Date;
+  status: 'active' | 'archived' | 'deleted';
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ProjectService {
+  private apiUrl = '/api/projects';
+  private projectsSubject = new BehaviorSubject<Project[]>([]);
+  public projects$ = this.projectsSubject.asObservable();
+
+  constructor(private http: HttpClient) {
+    this.loadProjects();
+  }
+
+  loadProjects(): void {
+    this.http.get<Project[]>(this.apiUrl)
+      .subscribe(projects => {
+        this.projectsSubject.next(projects);
+      });
+  }
+
+  createProject(name: string, description: string): Observable<Project> {
+    return this.http.post<Project>(this.apiUrl, { name, description })
+      .pipe(
+        map(project => {
+          const current = this.projectsSubject.value;
+          this.projectsSubject.next([...current, project]);
+          return project;
+        })
+      );
+  }
+
+  getProject(id: number): Observable<Project | undefined> {
+    return this.projects$.pipe(
+      map(projects => projects.find(p => p.id === id))
+    );
+  }
+
+  updateProject(id: number, updates: Partial<Project>): Observable<Project> {
+    return this.http.put<Project>(\`\${this.apiUrl}/\${id}\`, updates)
+      .pipe(
+        map(updated => {
+          const current = this.projectsSubject.value;
+          const index = current.findIndex(p => p.id === id);
+          if (index !== -1) {
+            current[index] = updated;
+            this.projectsSubject.next([...current]);
+          }
+          return updated;
+        })
+      );
+  }
+
+  deleteProject(id: number): Observable<void> {
+    return this.http.delete<void>(\`\${this.apiUrl}/\${id}\`)
+      .pipe(
+        map(() => {
+          const current = this.projectsSubject.value;
+          this.projectsSubject.next(current.filter(p => p.id !== id));
+        })
+      );
+  }
+}`
             };
-            return outputs[processId] || `AI-${processId} processing complete.`;
+
+            const code = codeSnippets[language] || codeSnippets.python;
+            document.getElementById('codeOutput').textContent = code;
+            SystemState.totalLinesGenerated += code.split('\n').length;
+            document.getElementById('totalLines').textContent = SystemState.totalLinesGenerated;
         }
 
-        function addToDiscussion(aiName, message) {
+        function addAgentThought(agentName, thinking) {
             const container = document.getElementById('discussionContainer');
             const item = document.createElement('div');
             item.className = 'ai-discussion-item';
             item.innerHTML = `
-                <div class="ai-name">${aiName}</div>
-                <div class="discussion-content">${message.replace(/\n/g, '<br>')}</div>
+                <div class="ai-name">💭 ${agentName}</div>
+                <div class="discussion-content">${thinking}</div>
             `;
             container.appendChild(item);
             container.scrollTop = container.scrollHeight;
+            SystemState.discussionHistory.push({ agent: agentName, thought: thinking });
+        }
+
+        function generateDownloadLink() {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const downloadUrl = `data:text/plain;base64,${btoa(document.getElementById('codeOutput').textContent)}`;
+            const projectName = document.getElementById('userRequest').value.split(' ')[0] || 'project';
+            
+            const downloadSection = document.getElementById('downloadSection');
+            downloadSection.innerHTML = `
+                <p style="color: #00ff00; margin-bottom: 15px;">✓ Code generation complete - Evolution cycle ${SystemState.evolutionCycles}</p>
+                <a class="download-link" href="${downloadUrl}" download="${projectName}-${SystemState.evolutionCycles}.py">
+                    ⬇ Download Generated Code
+                </a>
+                <p style="color: #a0a0a0; font-size: 0.85em; margin-top: 10px;">
+                    Size: ~${Math.floor(document.getElementById('codeOutput').textContent.length / 1024)}KB | 
+                    Lines: ${document.getElementById('codeOutput').textContent.split('\n').length} | 
+                    Generated: ${new Date().toLocaleString()}
+                </p>
+            `;
+        }
+
+        function updateProgressBar(percent) {
+            document.getElementById('evolutionProgress').style.width = percent + '%';
+        }
+
+        function updateAgentCount() {
+            document.getElementById('aiProcessCount').textContent = `${SystemState.activeAgents}/10`;
+        }
+
+        function terminateAllProcesses() {
+            for (let i = 1; i <= 10; i++) {
+                if (SystemState.processTimers[i]) {
+                    clearTimeout(SystemState.processTimers[i]);
+                    delete SystemState.processTimers[i];
+                }
+                const agent = Agents[i];
+                agent.status = 'idle';
+                const agentElement = document.getElementById(`agent-${i}`);
+                const statusElement = document.getElementById(`status-${i}`);
+                agentElement.classList.remove('active', 'done');
+                statusElement.textContent = 'Idle';
+            }
+            SystemState.activeAgents = 0;
+            updateAgentCount();
+            document.getElementById('evolutionStatus').textContent = 'Terminated';
+            showNotification('All agents terminated', 'warning');
         }
 
         // =============================================
-        // Modal Functions
+        // Modal & Auth
         // =============================================
         function showTokenModal() {
             document.getElementById('tokenModal').classList.add('show');
@@ -1201,143 +1350,68 @@
             }
             
             if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
-                showNotification('Invalid token format. Token should start with ghp_ or github_pat_', 'error');
+                showNotification('Invalid token format', 'error');
                 return;
             }
 
-            githubAuthManager.setAuthentication(token);
+            authenticate(token);
             closeTokenModal();
-            showNotification('GitHub token added successfully!', 'success');
+            showNotification('Authentication successful!', 'success');
         }
 
-        // =============================================
-        // GitHub Authentication Manager
-        // =============================================
-        class GitHubAuthManager {
-            constructor() {
-                this.loadAuthState();
-            }
+        function authenticate(token) {
+            SystemState.isAuthenticated = true;
+            SystemState.githubToken = token;
+            SystemState.githubUser = { name: 'AI System', login: 'hunyasubniki-max' };
+            localStorage.setItem('githubToken', token);
+            localStorage.setItem('authTime', Date.now().toString());
+            updateAuthUI();
+            initializeAgentUI();
+        }
 
-            setAuthentication(token) {
-                GlobalState.isAuthenticated = true;
-                GlobalState.githubToken = token;
-                localStorage.setItem('githubToken', token);
-                localStorage.setItem('githubAuthTime', Date.now().toString());
-                this.verifyToken(token);
-                this.updateAuthUI();
-            }
+        function logoutGitHub() {
+            SystemState.isAuthenticated = false;
+            SystemState.githubUser = null;
+            SystemState.githubToken = null;
+            localStorage.removeItem('githubToken');
+            localStorage.removeItem('authTime');
+            updateAuthUI();
+            terminateAllProcesses();
+            showNotification('Logged out', 'success');
+            document.getElementById('mainContent').classList.add('disabled-content');
+        }
 
-            verifyToken(token) {
-                GlobalState.githubUser = {
-                    name: 'AI System',
-                    login: 'hunyasubniki-max',
-                    avatar: '🤖'
-                };
-                this.updateAuthUI();
-                initializeAIProcessesUI();
-            }
+        function updateAuthUI() {
+            const authStatus = document.getElementById('authStatus');
+            const userStatus = document.getElementById('userStatus');
 
-            logout() {
-                GlobalState.isAuthenticated = false;
-                GlobalState.githubUser = null;
-                GlobalState.githubToken = null;
-                localStorage.removeItem('githubToken');
-                localStorage.removeItem('githubAuthTime');
-                this.updateAuthUI();
-                terminateAllProcesses();
-                showNotification('Logged out from GitHub', 'success');
+            if (SystemState.isAuthenticated && SystemState.githubUser) {
+                authStatus.style.display = 'none';
+                userStatus.style.display = 'flex';
+                document.getElementById('userName').textContent = SystemState.githubUser.name;
+                document.getElementById('userLogin').textContent = SystemState.githubUser.login;
+                document.getElementById('userInitial').textContent = SystemState.githubUser.name.charAt(0);
+                document.getElementById('mainContent').classList.remove('disabled-content');
+                document.getElementById('networkStatus').textContent = 'Connected';
+            } else {
+                authStatus.style.display = 'block';
+                userStatus.style.display = 'none';
                 document.getElementById('mainContent').classList.add('disabled-content');
-            }
-
-            loadAuthState() {
-                const token = localStorage.getItem('githubToken');
-                const authTime = localStorage.getItem('githubAuthTime');
-                
-                if (token && authTime) {
-                    const ageInDays = (Date.now() - parseInt(authTime)) / (1000 * 60 * 60 * 24);
-                    if (ageInDays < 365) {
-                        this.setAuthentication(token);
-                    } else {
-                        localStorage.removeItem('githubToken');
-                        localStorage.removeItem('githubAuthTime');
-                    }
-                }
-            }
-
-            updateAuthUI() {
-                const authStatus = document.getElementById('authStatus');
-                const userStatus = document.getElementById('userStatus');
-
-                if (GlobalState.isAuthenticated && GlobalState.githubUser) {
-                    authStatus.style.display = 'none';
-                    userStatus.style.display = 'flex';
-                    document.getElementById('userName').textContent = GlobalState.githubUser.name;
-                    document.getElementById('userLogin').textContent = GlobalState.githubUser.login;
-                    document.getElementById('userInitial').textContent = GlobalState.githubUser.name.charAt(0).toUpperCase();
-                    document.getElementById('mainContent').classList.remove('disabled-content');
-                } else {
-                    authStatus.style.display = 'block';
-                    userStatus.style.display = 'none';
-                    document.getElementById('mainContent').classList.add('disabled-content');
-                }
-            }
-
-            checkForUpdates() {
-                if (!GlobalState.isAuthenticated) {
-                    showNotification('Please authenticate first', 'warning');
-                    return;
-                }
-                showNotification('Checking for updates...', 'info');
-            }
-
-            startDownload() {
-                if (!GlobalState.isAuthenticated) {
-                    showNotification('Please authenticate first', 'warning');
-                    return;
-                }
-                showNotification('Download started...', 'info');
-                simulateDownload();
-            }
-
-            cancelDownload() {
-                showNotification('Download cancelled', 'warning');
-                document.getElementById('downloadProgressBar').style.width = '0%';
-                document.getElementById('progressText').textContent = '0%';
-            }
-
-            pushToGitHub() {
-                if (!GlobalState.isAuthenticated) {
-                    showNotification('Please authenticate first', 'warning');
-                    return;
-                }
-                showNotification('Pushing enhanced code to GitHub...', 'info');
+                document.getElementById('networkStatus').textContent = 'Standby';
             }
         }
 
-        const githubAuthManager = new GitHubAuthManager();
-
-        // =============================================
-        // GitHub Manager (Operations)
-        // =============================================
-        class GitHubManager {
-            checkForUpdates() {
-                githubAuthManager.checkForUpdates();
-            }
-
-            startDownload() {
-                githubAuthManager.startDownload();
-            }
-
-            cancelDownload() {
-                githubAuthManager.cancelDownload();
-            }
-
-            pushToGitHub() {
-                githubAuthManager.pushToGitHub();
+        function loadAuthState() {
+            const token = localStorage.getItem('githubToken');
+            const authTime = localStorage.getItem('authTime');
+            
+            if (token && authTime) {
+                const ageInDays = (Date.now() - parseInt(authTime)) / (1000 * 60 * 60 * 24);
+                if (ageInDays < 365) {
+                    authenticate(token);
+                }
             }
         }
-
-        const githubManager = new GitHubManager();
 
         // =============================================
         // Utility Functions
@@ -1354,90 +1428,33 @@
             setTimeout(() => notification.remove(), 5000);
         }
 
-        function simulateDownload() {
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress >= 100) progress = 100;
-                document.getElementById('downloadProgressBar').style.width = progress + '%';
-                document.getElementById('progressText').textContent = Math.round(progress) + '%';
-                document.getElementById('downloadProgress').textContent = Math.round(progress) + '%';
-                document.getElementById('downloadedSize').textContent = (progress * 2.5 / 100).toFixed(1) + ' MB';
-                
-                if (progress >= 100) clearInterval(interval);
-            }, 500);
-        }
-
-        function startEvolutionCycle() {
-            if (!GlobalState.isAuthenticated) {
-                showNotification('Please authenticate first', 'warning');
+        function submitProject() {
+            const spec = document.getElementById('userRequest').value.trim();
+            if (!spec) {
+                showNotification('Please enter a project description', 'warning');
                 return;
             }
-            GlobalState.evolutionCycles++;
-            document.getElementById('cyclesCompleted').textContent = GlobalState.evolutionCycles;
-            showNotification(`Evolution cycle #${GlobalState.evolutionCycles} started`, 'info');
-            startAllAIProcesses();
+            startEvolutionCycle();
         }
 
-        function resetForm() {
+        function clearForm() {
             document.getElementById('userRequest').value = '';
             document.getElementById('framework').value = '';
         }
 
-        function generateRealtimeDiscussion() {
-            if (!GlobalState.isAuthenticated) {
+        function commitToGitHub() {
+            if (!SystemState.isAuthenticated) {
                 showNotification('Please authenticate first', 'warning');
                 return;
             }
-            const container = document.getElementById('discussionContainer');
-            container.innerHTML = '';
-            showNotification('Generating discussion with all 10 AIs...', 'info');
-            startAllAIProcesses();
-        }
-
-        function executePublishedTests() {
-            if (!GlobalState.isAuthenticated) {
-                showNotification('Please authenticate first', 'warning');
-                return;
-            }
-            showNotification('Running tests with AI-4 (QA)...', 'info');
-            startAIProcess(4, 2000);
-        }
-
-        function startSelfExtension() {
-            if (!GlobalState.isAuthenticated) {
-                showNotification('Please authenticate first', 'warning');
-                return;
-            }
-            showNotification('Self-extension protocol initiated...', 'info');
-        }
-
-        function autoEvolveUntil85Percent() {
-            if (!GlobalState.isAuthenticated) {
-                showNotification('Please authenticate first', 'warning');
-                return;
-            }
-            showNotification('Auto-evolving system to 85% success rate...', 'info');
-            startEvolutionCycle();
-        }
-
-        function commitSuccessfulEvolution() {
-            if (!GlobalState.isAuthenticated) {
-                showNotification('Please authenticate first', 'warning');
-                return;
-            }
-            showNotification('Committing evolution to GitHub with AI-10...', 'info');
-            startAIProcess(10, 1500);
-        }
-
-        function logoutGitHub() {
-            githubAuthManager.logout();
+            showNotification('Committing to GitHub...', 'info');
         }
 
         // Initialize
         window.addEventListener('load', () => {
-            githubAuthManager.updateAuthUI();
-            initializeAIProcessesUI();
+            loadAuthState();
+            updateAuthUI();
+            initializeAgentUI();
         });
     </script>
 </body>
